@@ -571,7 +571,7 @@
                 </div>
                 
                 <div class="info-list-container" id="infoListContainer">
-                    </div>
+                     </div>
             </div>
 
         </main>
@@ -591,7 +591,7 @@
                 <div id="modalAttachmentSection" style="display: none;">
                     <div class="modal-attachment">
                         <div><i class="fa-solid fa-file-pdf"></i> &nbsp;<span id="modalAttachmentName">surat_undangan.pdf</span></div>
-                        <button class="download-action-btn" onclick="alert('Mengunduh dokumen lampiran...')">Unduh</button>
+                        <button class="download-action-btn" onclick="downloadAttachmentFile()">Unduh</button>
                     </div>
                 </div>
             </div>
@@ -602,55 +602,78 @@
     </div>
 
     <script>
-        // --- DATA DATABASE INFO & KEGIATAN (SIMULASI INPUT DATA) ---
-        const infoDatabase = [
-            {
-                id: 1,
-                title: "Bimtek Penguatan Moderasi Beragama Pengurus Kemenag",
-                summary: "Diwajibkan bagi seluruh pengurus dan anggota kepenyuluhan wilayah Rokan Hulu.",
-                description: "Sehubungan dengan upaya penguatan pemahaman nilai keselarasan beragama, Kantor Kementerian Agama Kabupaten Rokan Hulu menginstruksikan seluruh Penyuluh Agama Islam (Fungsional & PPPK/Non-ASN) untuk menghadiri Bimbingan Teknis.\n\nHari/Tanggal: Senin, 13 Juli 2026\nWaktu: 08:00 WIB s.d Selesai\nTempat: Aula Kantor Kemenag Pasir Pengaraian\nCatatan: Memakai seragam batik IPARI resmi nasional.",
-                tag: "Agenda",
-                tagClass: "tag-agenda",
-                date: "11 Juli 2026",
-                image: "https://images.unsplash.com/photo-1542810634-71277d95dcbb?q=80&w=600&auto=format&fit=crop",
-                hasAttachment: true,
-                attachmentName: "Surat_Undangan_Bimtek_2026.pdf"
-            },
-            {
-                id: 2,
-                title: "Aksi Sedekah Jumat Kreatif UPZ & Penyuluh Kecamatan Tambusai Utara",
-                summary: "Penyaluran sembako dan logistik santunan di kawasan desa binaan Bangun Jaya.",
-                description: "Alhamdulillah, Penyuluh Agama Islam Kecamatan Tambusai Utara bersinergi dengan pengurus UPZ Desa Bangun Jaya telah selesai menyalurkan infak dan sedekah jumat berupa paket sembako lengkap dan santunan dana tunai kepada 45 KK yang masuk dalam kategori mustahik binaan daerah setempat.\n\nTerima kasih kepada seluruh donatur dan koordinator lapangan yang bertugas membantu kelancaran distribusi logistik.",
-                tag: "Aksi Sosial",
-                tagClass: "tag-sosial",
-                date: "10 Juli 2026",
-                image: "https://images.unsplash.com/photo-1517048676732-d65bc937f952?q=80&w=600&auto=format&fit=crop",
-                hasAttachment: false,
-                attachmentName: ""
-            },
-            {
-                id: 3,
-                title: "Surat Edaran Batas Akhir Input E-PA Kemenag Kuartal II",
-                summary: "Pengisian jurnal kerja mingguan dan e-dokumen wajib rampung akhir bulan ini.",
-                description: "Diberitahukan kepada seluruh rekan penyuluh, aplikasi e-PA pusat akan melakukan pemeliharaan server dan kunci data berkala pada akhir bulan ini pukul 23:59 WIB. Dimohon memeriksa seluruh isian materi penyuluhan kelompok binaan masing-masing.\n\nKeterlambatan input berakibat pada penundaan evaluasi kinerja bulanan.",
-                tag: "Unduhan Berkas",
-                tagClass: "tag-berkas",
-                date: "08 Juli 2026",
-                image: "https://images.unsplash.com/photo-1578311317614-2c262c5b7366?q=80&w=600&auto=format&fit=crop",
-                hasAttachment: true,
-                attachmentName: "SE_Penetapan_Batas_ePA.pdf"
-            }
-        ];
+        // ==========================================
+        // CONFIG: LINK GOOGLE SHEETS WEB APP URL
+        // ==========================================
+        // GANTI string kosong ini dengan URL Deployment Google Apps Script Anda
+        const SHEET_WEB_APP_URL = "https://script.google.com/macros/s/AKfycby3g7_B4b3hH-IovmH783fD4AepbM44DqA_1yFv_uT1T6DqP6iN97u48K55WlK9uM_m/exec"; 
 
-        // --- RENDER DRAF LIST KE HALAMAN INFO & KEGIATAN ---
+        // Variabel lokal penyimpan data database dari Sheet
+        let infoDatabase = [];
+        let currentActiveAttachmentUrl = ""; // Menyimpan tautan berkas unduhan aktif
+
+        // --- FETCH DATA INFO KEGIATAN DARI GOOGLE SHEET ---
+        async function fetchInfoData() {
+            const container = document.getElementById('infoListContainer');
+            container.innerHTML = `
+                <div style="text-align: center; padding: 40px; color: #6b7280;">
+                    <i class="fa-solid fa-spinner fa-spin" style="font-size: 26px; color: #0f766e; margin-bottom: 12px;"></i>
+                    <p style="font-size: 14px;">Mengambil info & agenda terbaru...</p>
+                </div>
+            `;
+
+            if (!SHEET_WEB_APP_URL || SHEET_WEB_APP_URL.includes("PASTE_URL")) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 30px; color: #ea580c; background-color: #fff8f6; border-radius:12px; border: 1px dashed #fdba74;">
+                        <i class="fa-solid fa-triangle-exclamation" style="font-size: 24px; margin-bottom: 10px;"></i>
+                        <p style="font-size: 14px; font-weight: 600;">Google Sheet Belum Terhubung</p>
+                        <p style="font-size: 12px; margin-top: 4px; color: #6b7280;">Silakan isi variabel SHEET_WEB_APP_URL di dalam kode dengan link Apps Script Anda.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            try {
+                const response = await fetch(SHEET_WEB_APP_URL);
+                if (!response.ok) throw new Error("Network response error");
+                
+                const data = await response.json();
+                
+                // Urutkan ID terbesar ke terkecil (agar data terbaru ada di paling atas)
+                infoDatabase = data.sort((a, b) => b.id - a.id);
+                
+                renderInfoList();
+            } catch (error) {
+                console.error("Gagal melakukan fetch data: ", error);
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 40px; color: #ef4444;">
+                        <i class="fa-solid fa-circle-exclamation" style="font-size: 28px; margin-bottom: 12px;"></i>
+                        <p style="font-size: 14px; font-weight:600;">Gagal Memuat Informasi</p>
+                        <p style="font-size: 12px; color: #9ca3af; margin-top: 4px;">Periksa sambungan internet atau izin publikasi Web App Anda.</p>
+                    </div>
+                `;
+            }
+        }
+
+        // --- RENDER DAFTAR LIST KE LAYAR ---
         function renderInfoList() {
             const container = document.getElementById('infoListContainer');
-            container.innerHTML = ""; // Bersihkan kontainer
+            container.innerHTML = ""; 
+            
+            if (infoDatabase.length === 0) {
+                container.innerHTML = `
+                    <p style="text-align:center; color:#9ca3af; padding: 30px; font-size: 14px;">
+                        <i class="fa-regular fa-folder-open" style="font-size:24px; display:block; margin-bottom:8px;"></i>
+                        Belum ada info atau kegiatan resmi yang diinputkan.
+                    </p>
+                `;
+                return;
+            }
             
             infoDatabase.forEach(item => {
                 const card = document.createElement('div');
                 card.className = "info-list-card";
-                card.onclick = () => openDetailModal(item.id); // Triger Detail Modal
+                card.onclick = () => openDetailModal(item.id); 
                 
                 card.innerHTML = `
                     <div class="info-card-left">
@@ -671,10 +694,10 @@
 
         // --- BUKA MODAL DETAIL CARD ---
         function openDetailModal(id) {
-            const item = infoDatabase.find(x => x.id === id);
+            const item = infoDatabase.find(x => Number(x.id) === Number(id));
             if (!item) return;
             
-            document.getElementById('modalImage').src = item.image;
+            document.getElementById('modalImage').src = item.image || "https://images.unsplash.com/photo-1542810634-71277d95dcbb?q=80&w=600&auto=format&fit=crop";
             document.getElementById('modalTag').className = `info-tag ${item.tagClass}`;
             document.getElementById('modalTag').innerText = item.tag;
             document.getElementById('modalDate').innerText = item.date;
@@ -682,14 +705,29 @@
             document.getElementById('modalDescription').innerText = item.description;
             
             const attachmentSection = document.getElementById('modalAttachmentSection');
-            if (item.hasAttachment) {
+            
+            // Konversi nilai string 'true' / 'false' dari Google Sheets
+            const hasAttachment = String(item.hasAttachment).toUpperCase() === 'TRUE' || item.hasAttachment === true;
+            
+            if (hasAttachment && item.attachmentUrl) {
                 attachmentSection.style.display = "block";
-                document.getElementById('modalAttachmentName').innerText = item.attachmentName;
+                document.getElementById('modalAttachmentName').innerText = item.attachmentName || "Berkas Lampiran";
+                currentActiveAttachmentUrl = item.attachmentUrl; // Simpan URL untuk aksi klik unduh
             } else {
                 attachmentSection.style.display = "none";
+                currentActiveAttachmentUrl = "";
             }
             
             document.getElementById('detailModalOverlay').classList.add('show');
+        }
+
+        // --- FUNGSI UNDUH BERKAS LAMPIRAN ---
+        function downloadAttachmentFile() {
+            if (currentActiveAttachmentUrl) {
+                window.open(currentActiveAttachmentUrl, '_blank');
+            } else {
+                alert("Tautan berkas tidak tersedia.");
+            }
         }
 
         // --- TUTUP MODAL DETAIL CARD ---
@@ -699,14 +737,11 @@
 
         // --- NAVIGASI ANTAR HALAMAN (VIEW SWITCHER) ---
         function navigateToView(viewId, sidebarItem = null) {
-            // Sembunyikan semua views
             document.querySelectorAll('.app-view').forEach(view => {
                 view.classList.remove('active-view');
             });
-            // Tampilkan view yang dipilih
             document.getElementById(viewId).classList.add('active-view');
             
-            // Kelola class active di sidebar link
             if(sidebarItem) {
                 document.querySelectorAll('.nav-item').forEach(item => {
                     item.classList.remove('current-page');
@@ -714,13 +749,43 @@
                 sidebarItem.classList.add('current-page');
             }
 
-            // Jika membuka infoView, load datanya
+            // Jika masuk ke halaman Info & Kegiatan, otomatis jalankan Fetching data
             if (viewId === 'infoView') {
-                renderInfoList();
+                fetchInfoData();
             }
         }
 
-        // --- JAM DIGITAL & KALENDER ---
+        // --- SOLUSI PENANGGALAN HIJRIAH AKURAT DI GITHUB PAGES ---
+        function getAccurateHijriDate(date) {
+            try {
+                // Ambil tanggal murni dari sistem Kalender Islam
+                const formatter = new Intl.DateTimeFormat('id-ID-u-ca-islamic-umalqura', {
+                    day: 'numeric',
+                    month: 'numeric',
+                    year: 'numeric'
+                });
+                
+                const parts = formatter.format(date).split('/');
+                // Format hasil pembagian biasanya: [Tanggal, Bulan, Tahun]
+                const day = parts[0];
+                const monthIndex = parseInt(parts[1], 10);
+                const year = parts[2].replace(/\D/g, ""); // Ambil angka tahun saja
+
+                // Nama-nama bulan Hijriah standar Indonesia
+                const hijriMonths = [
+                    "Muharram", "Safar", "Rabi'ul Awal", "Rabi'ul Akhir",
+                    "Jumadil Awal", "Jumadil Akhir", "Rajab", "Sya'ban",
+                    "Ramadhan", "Syawal", "Dzulqa'dah", "Dzulhijjah"
+                ];
+
+                const monthName = hijriMonths[monthIndex - 1];
+                return `${day} ${monthName} ${year} H`;
+            } catch (e) {
+                return "14 Safar 1448 H"; // Fallback aman jika browser tidak mendukung Intl
+            }
+        }
+
+        // --- JAM DIGITAL & KALENDER LIVE ---
         function updateDateTime() {
             try {
                 const now = new Date();
@@ -738,10 +803,8 @@
                 const optionsMasehi = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
                 document.getElementById('masehiDate').innerText = now.toLocaleDateString('id-ID', optionsMasehi);
 
-                const formatterHijri = new Intl.DateTimeFormat('id-ID-u-ca-islamic-umalqura', {
-                    day: 'numeric', month: 'long', year: 'numeric'
-                });
-                document.getElementById('hijriDate').innerText = formatterHijri.format(now) + " H";
+                // Menggunakan fungsi penanggalan Hijriah yang baru & akurat
+                document.getElementById('hijriDate').innerText = getAccurateHijriDate(now);
             } catch (error) {
                 document.getElementById('hijriDate').innerText = "14 Safar 1448 H";
             }
@@ -767,7 +830,10 @@
             },
             options: {
                 responsive: true, maintainAspectRatio: false,
-                plugins: { legend: { display: false }, datalabels: { anchor: 'end', align: 'top', color: '#374151', font: { weight: '700', size: 11 } } },
+                plugins: { 
+                    legend: { display: false }, 
+                    datalabels: { anchor: 'end', align: 'top', color: '#374151', font: { weight: '700', size: 11 } } 
+                },
                 scales: { y: { beginAtZero: true, grid: { color: '#f3f4f6' }, ticks: { stepSize: 2 } }, x: { grid: { display: false } } }
             }
         });
