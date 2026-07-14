@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IPARI Rokan Hulu - Dashboard Terpadu</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght=400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
+
+    <style>
+        /* RESET & BASE STYLES */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: #f4f7f6;
+            color: #333;
+            display: flex;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* --- SIDEBAR NAVIGATION --- */
+        .sidebar {
+            width: 260px;
+            background-color: #fff;
+            box-shadow: 4px 0 10px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            transition: width 0.3s ease;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            z-index: 100;
+        }
+
+        .sidebar.minimized { width: 70px; }
+
+        .sidebar-toggle-zone {
+            padding: 20px 16px;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .sidebar.minimized .sidebar-toggle-zone { justify-content: center; }
+
+        .toggle-sidebar-btn {
+            background: #f3f4f6;
+            border: none;
+            width: 35px;
+            height: 35px;
+            border-radius: 8px;
+            color: #0f766e;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        .sidebar-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            padding: 16px 12px;
+            flex-grow: 1;
+        }
+
+        .nav-item-wrapper { display: flex; flex-direction: column; }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 14px;
+            color: #6b7280;
+            text-decoration: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+            white-space: nowrap;
+            cursor: pointer;
+        }
+
+        .nav-link-content { display: flex; align-items: center; gap: 14px; }
+        .nav-item i { font-size: 20px; min-width: 24px; text-align: center; }
+        .nav-item .arrow-icon { font-size: 12px; transition: transform 0.3s; }
+
+        .sidebar.minimized .nav-item span,
+        .sidebar.minimized .arrow-icon { display: none; }
+
+        .nav-item:hover, .nav-item.active { background-color: #f0fdf4; color: #115e59; }
+        .nav-item.current-page { background-color: #115e59; color: #fff; }
+
+        .dropdown-container {
+            display: none;
+            flex-direction: column;
+            gap: 2px;
+            padding-left: 34px;
+            margin-top: 2px;
+        }
+
+        .sidebar.minimized .dropdown-container { padding-left: 0; }
+        .dropdown-container.show { display: flex; }
+        .nav-item.open .arrow-icon { transform: rotate(180deg); }
+
+        .sub-nav-item {
+            padding: 10px 14px;
+            font-size: 13px;
+            color: #6b7280;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .sidebar.minimized .sub-nav-item span { display: none; }
+        .sidebar.minimized .sub-nav-item { text-align: center; font-size: 10px; padding: 8px 0; }
+        .sub-nav-item:hover { color: #115e59; background-color: #f3f4f6; }
+
+        /* --- MAIN CONTENT STRUCTURE --- */
+        .main-content { flex-grow: 1; display: flex; flex-direction: column; min-width: 0; }
+
+        .app-header {
+            background: linear-gradient(135deg, #115e59, #0f766e);
+            color: #fff;
+            padding: 20px 24px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-content { display: flex; justify-content: space-between; align-items: center; }
+        .logo-zone { display: flex; align-items: center; gap: 12px; }
+
+        .logo-placeholder {
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .logo-zone h1 { font-size: 18px; font-weight: 700; }
+        .logo-zone p { font-size: 12px; opacity: 0.8; }
+        .notif-btn { background: none; border: none; color: #fff; font-size: 20px; cursor: pointer; }
+
+        .app-container { padding: 24px; padding-bottom: 80px; }
+
+        /* VIEWS TOGGLE */
+        .app-view { display: none; }
+        .app-view.active-view { display: block; }
+
+        /* WIDGET SAPAAN WAKTU */
+        .greeting-time-widget {
+            background-color: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            padding: 16px 20px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+
+        .greeting-zone h2 { font-size: 16px; font-weight: 600; color: #1f2937; }
+        .greeting-zone p { font-size: 13px; color: #6b7280; margin-top: 2px; }
+
+        .time-zone {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            background: linear-gradient(135deg, #115e59, #0f766e);
+            padding: 10px 20px;
+            border-radius: 10px;
+        }
+
+        .digital-clock {
+            font-size: 20px;
+            font-weight: 700;
+            color: #ffffff;
+            border-right: 1px solid rgba(255, 255, 255, 0.2);
+            padding-right: 16px;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .calendar-details { font-size: 12px; color: rgba(255, 255, 255, 0.9); line-height: 1.4; }
+
+        /* CAROUSEL SLIDER */
+        .info-slider-section { margin-bottom: 24px; position: relative; }
+        .slider-wrapper { width: 100%; overflow: hidden; border-radius: 16px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05); }
+        .slider-container { display: flex; width: 500%; transition: transform 0.5s ease-in-out; }
+        .slide-item { width: 20%; flex-shrink: 0; position: relative; }
+        .slide-item img { width: 100%; height: 280px; object-fit: cover; display: block; }
+        
+        .slide-content {
+            position: absolute; bottom: 0; left: 0; right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.8), rgba(0,0,0,0));
+            color: #fff; padding: 30px 24px 20px 24px;
+        }
+
+        .slide-badge { background-color: #f59e0b; color: #fff; padding: 4px 8px; border-radius: 20px; font-size: 11px; font-weight: 600; display: inline-block; margin-bottom: 8px; }
+        .slide-content h3 { font-size: 18px; font-weight: 600; margin-bottom: 6px; }
+        .slide-content p { font-size: 13px; opacity: 0.9; }
+        .slider-dots { text-align: center; margin-top: 12px; }
+        
+        .dot { height: 8px; width: 8px; margin: 0 4px; background-color: #d1d5db; border-radius: 50%; display: inline-block; transition: all 0.3s; cursor: pointer; }
+        .dot.active { background-color: #0f766e; width: 20px; border-radius: 10px; }
+
+        /* CHARTS & GRIDS */
+        .chart-section { background-color: #fff; padding: 24px; border-radius: 16px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); margin-bottom: 24px; }
+        .chart-section h2 { font-size: 15px; font-weight: 700; color: #4b5563; margin-bottom: 18px; display: flex; align-items: center; gap: 8px; }
+        .chart-scroll-wrapper { width: 100%; overflow-x: auto; }
+        .chart-container { position: relative; width: 100%; height: 320px; min-width: 750px; }
+
+        .menu-section h2 { font-size: 15px; font-weight: 700; color: #4b5563; margin-bottom: 16px; }
+        .menu-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+        
+        .menu-card {
+            background-color: #fff; padding: 24px; border-radius: 16px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); cursor: pointer; transition: transform 0.2s;
+        }
+
+        .menu-card:hover { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08); }
+        .menu-card:active { transform: scale(0.98); }
+        
+        .icon-wrapper { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px; margin-bottom: 16px; }
+        .color-3 { background-color: #fff7ed; color: #ea580c; }
+        .color-4 { background-color: #fdf2f8; color: #db2777; }
+        
+        .menu-card h3 { font-size: 16px; font-weight: 600; color: #1f2937; margin-bottom: 6px; }
+        .menu-card p { font-size: 13px; color: #9ca3af; line-height: 1.4; }
+
+        /* --- HALAMAN INFO & KEGIATAN DESIGN --- */
+        .view-header { display: flex; align-items: center; gap: 16px; margin-bottom: 20px; }
+        
+        .back-btn {
+            background-color: #fff; border: 1px solid #e5e7eb; width: 40px; height: 40px;
+            border-radius: 10px; display: flex; align-items: center; justify-content: center;
+            color: #374151; cursor: pointer; transition: background 0.2s;
+        }
+        .back-btn:hover { background-color: #f3f4f6; }
+        .view-header h2 { font-size: 20px; font-weight: 700; color: #1f2937; }
+
+        .info-list-container { display: flex; flex-direction: column; gap: 14px; }
+        
+        .info-list-card {
+            background-color: #fff; border-radius: 14px; padding: 18px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.03); border-left: 5px solid #0f766e;
+            display: flex; justify-content: space-between; align-items: center;
+            cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .info-list-card:hover { transform: translateY(-2px); box-shadow: 0 6px 12px rgba(0,0,0,0.05); }
+        .info-card-left { display: flex; flex-direction: column; gap: 6px; }
+        
+        .info-badge-row { display: flex; align-items: center; gap: 8px; }
+        .info-tag { font-size: 11px; padding: 3px 8px; border-radius: 20px; font-weight: 600; color: #fff; }
+        .tag-agenda { background-color: #3b82f6; }
+        .tag-sosial { background-color: #10b981; }
+        .tag-berkas { background-color: #ef4444; }
+        
+        .info-date { font-size: 12px; color: #9ca3af; }
+        .info-list-card h3 { font-size: 15px; font-weight: 600; color: #1f2937; }
+        .info-list-card p { font-size: 13px; color: #6b7280; }
+        .info-card-right i { color: #9ca3af; font-size: 16px; }
+
+        /* --- MODAL BOX DETAIL CARD OVERLAY --- */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background-color: rgba(0, 0, 0, 0.4); backdrop-filter: blur(4px);
+            z-index: 2000; display: none; align-items: center; justify-content: center;
+            padding: 20px;
+        }
+        
+        .modal-overlay.show { display: flex; }
+        
+        .detail-modal-card {
+            background-color: #fff; width: 100%; max-width: 600px;
+            border-radius: 20px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.15);
+            overflow: hidden; display: flex; flex-direction: column;
+            animation: modalFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            max-height: 85vh;
+        }
+        
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: scale(0.95) translateY(10px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .modal-img { width: 100%; height: 220px; object-fit: cover; }
+        
+        .modal-body { padding: 24px; overflow-y: auto; flex-grow: 1; }
+        
+        .modal-meta { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .modal-body h3 { font-size: 18px; font-weight: 700; color: #1f2937; margin-bottom: 14px; line-height: 1.4; }
+        
+        .modal-desc { font-size: 14px; color: #4b5563; line-height: 1.6; margin-bottom: 20px; white-space: pre-line; }
+        
+        .modal-attachment {
+            background-color: #f3f4f6; padding: 12px 16px; border-radius: 10px;
+            display: flex; justify-content: space-between; align-items: center;
+            font-size: 13px; font-weight: 500; color: #374151; margin-top: 10px;
+        }
+        .modal-attachment i { color: #ef4444; font-size: 16px; }
+        .download-action-btn { background: none; border: none; color: #0f766e; font-weight: 600; cursor: pointer; }
+
+        .modal-footer {
+            padding: 16px 24px; border-top: 1px solid #e5e7eb;
+            display: flex; justify-content: flex-end; background-color: #f9fafb;
+        }
+        
+        .close-modal-btn {
+            background-color: #e5e7eb; border: none; padding: 10px 20px;
+            border-radius: 8px; font-size: 13px; font-weight: 600; color: #4b5563;
+            cursor: pointer; transition: background 0.2s;
+        }
+        .close-modal-btn:hover { background-color: #d1d5db; }
+
+        /* --- MOBILE NAV BOTTOM --- */
+        .mobile-sheet-overlay {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background-color: rgba(0,0,0,0.5); z-index: 1000;
+            display: none; opacity: 0; transition: opacity 0.3s ease;
+        }
+        .mobile-sheet {
+            position: fixed; bottom: -100%; left: 0; right: 0;
+            background-color: #fff; border-radius: 20px 20px 0 0;
+            padding: 24px; z-index: 1010; transition: bottom 0.3s ease;
+        }
+        .mobile-sheet-overlay.show { display: block; opacity: 1; }
+        .mobile-sheet-overlay.show .mobile-sheet { bottom: 0; }
+        .sheet-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .sheet-header h3 { font-size: 16px; font-weight: 700; color: #1f2937; }
+        .close-sheet-btn { background: none; border: none; font-size: 20px; color: #9ca3af; cursor: pointer; }
+        .sheet-menu-list { display: flex; flex-direction: column; gap: 12px; }
+        .sheet-item { display: flex; align-items: center; gap: 14px; padding: 14px; background-color: #f9fafb; border-radius: 12px; text-decoration: none; color: #374151; font-weight: 500; font-size: 14px; }
+        .sheet-item i { color: #0f766e; font-size: 18px; }
+
+        @media (max-width: 768px) {
+            body { flex-direction: column; }
+            .sidebar { width: 100%; height: 64px; position: fixed; bottom: 0; top: auto; flex-direction: row; box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.05); border-radius: 16px 16px 0 0; z-index: 1000; }
+            .sidebar-toggle-zone { display: none; }
+            .sidebar-menu { flex-direction: row; justify-content: space-around; width: 100%; padding: 0 10px; gap: 0; align-items: center; }
+            .nav-item { flex-direction: column; font-size: 11px; gap: 4px; padding: 8px; justify-content: center; }
+            .nav-link-content { flex-direction: column; gap: 4px; }
+            .nav-item .arrow-icon { display: none; }
+            .dropdown-container { display: none !important; }
+            .slide-item img { height: 180px; }
+            .menu-grid { grid-template-columns: 1fr; }
+            .chart-container { height: 260px; }
+            .greeting-time-widget { flex-direction: column; align-items: flex-start; padding: 14px; }
+            .time-zone { width: 100%; justify-content: space-between; }
+            .app-container { padding-bottom: 100px; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="sidebar" id="appSidebar">
+        <div class="sidebar-toggle-zone">
+            <button class="toggle-sidebar-btn" onclick="toggleSidebar()">
+                <i class="fa-solid fa-bars" id="toggleIcon"></i>
+            </button>
+        </div>
+        
+        <div class="sidebar-menu">
+            <div onclick="navigateToView('homeView', this)" class="nav-item active current-page">
+                <div class="nav-link-content">
+                    <i class="fa-solid fa-house"></i>
+                    <span>Beranda</span>
+                </div>
+            </div>
+            
+            <div class="nav-item-wrapper">
+                <div class="nav-item" id="materiMenuBtn" onclick="handleMenuDropdownClick('materiDropdown', 'materiMenuBtn', 'sheetMateri')">
+                    <div class="nav-link-content">
+                        <i class="fa-solid fa-book-open"></i>
+                        <span>Bank Materi</span>
+                    </div>
+                    <i class="fa-solid fa-chevron-down arrow-icon"></i>
+                </div>
+                <div class="dropdown-container" id="materiDropdown">
+                    <a href="#" class="sub-nav-item" onclick="alert('Membuka Halaman Materi Penyuluhan...')"><i class="fa-solid fa-chalkboard-user" style="font-size:13px; margin-right:6px;"></i> <span>Materi Penyuluhan</span></a>
+                    <a href="#" class="sub-nav-item" onclick="alert('Membuka Halaman Materi Khutbah...')"><i class="fa-solid fa-scroll" style="font-size:13px; margin-right:6px;"></i> <span>Materi Khutbah</span></a>
+                </div>
+            </div>
+            
+            <div class="nav-item-wrapper">
+                <div class="nav-item" id="profilMenuBtn" onclick="handleMenuDropdownClick('profilDropdown', 'profilMenuBtn', 'sheetProfil')">
+                    <div class="nav-link-content">
+                        <i class="fa-solid fa-user"></i>
+                        <span>Profil</span>
+                    </div>
+                    <i class="fa-solid fa-chevron-down arrow-icon"></i>
+                </div>
+                <div class="dropdown-container" id="profilDropdown">
+                    <a href="#" class="sub-nav-item" onclick="alert('Membuka Profil Pengurus Kabupaten Rokan Hulu...')"><i class="fa-solid fa-id-card-clip" style="font-size:13px; margin-right:6px;"></i> <span>Pengurus Kab</span></a>
+                    <a href="#" class="sub-nav-item" onclick="alert('Membuka Direktori Anggota per Kecamatan...')"><i class="fa-solid fa-map-location-dot" style="font-size:13px; margin-right:6px;"></i> <span>Anggota Kec</span></a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="mobile-sheet-overlay" id="sheetMateri" onclick="closeMobileSheet('sheetMateri')">
+        <div class="mobile-sheet" onclick="event.stopPropagation()">
+            <div class="sheet-header">
+                <h3>Kategori Bank Materi</h3>
+                <button class="close-sheet-btn" onclick="closeMobileSheet('sheetMateri')"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="sheet-menu-list">
+                <a href="#" class="sheet-item" onclick="alert('Membuka Halaman Materi Penyuluhan...'); closeMobileSheet('sheetMateri');">
+                    <i class="fa-solid fa-chalkboard-user"></i> Materi Penyuluhan
+                </a>
+                <a href="#" class="sheet-item" onclick="alert('Membuka Halaman Materi Khutbah...'); closeMobileSheet('sheetMateri');">
+                    <i class="fa-solid fa-scroll"></i> Materi Khutbah
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="mobile-sheet-overlay" id="sheetProfil" onclick="closeMobileSheet('sheetProfil')">
+        <div class="mobile-sheet" onclick="event.stopPropagation()">
+            <div class="sheet-header">
+                <h3>Menu Profil & Direktori</h3>
+                <button class="close-sheet-btn" onclick="closeMobileSheet('sheetProfil')"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="sheet-menu-list">
+                <a href="#" class="sheet-item" onclick="alert('Membuka Profil Pengurus Kabupaten Rokan Hulu...'); closeMobileSheet('sheetProfil');">
+                    <i class="fa-solid fa-id-card-clip"></i> Profil Pengurus Kabupaten
+                </a>
+                <a href="#" class="sheet-item" onclick="alert('Membuka Direktori Anggota per Kecamatan...'); closeMobileSheet('sheetProfil');">
+                    <i class="fa-solid fa-map-location-dot"></i> Anggota Per Kecamatan (Direktori)
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <header class="app-header">
+            <div class="header-content">
+                <div class="logo-zone">
+                    <div class="logo-placeholder"><i class="fa-solid fa-mosque"></i></div>
+                    <div>
+                        <h1>IPARI ROKAN HULU</h1>
+                        <p>Sistem Informasi & Pendukung Penyuluh Agama</p>
+                    </div>
+                </div>
+                <button class="notif-btn"><i class="fa-regular fa-bell"></i></button>
+            </div>
+        </header>
+
+        <main class="app-container">
+            
+            <div id="homeView" class="app-view active-view">
+                <section class="greeting-time-widget">
+                    <div class="greeting-zone">
+                        <h2 id="greetingText">Selamat ...</h2>
+                        <p>Semangat menebar kebaikan dan membimbing masyarakat hari ini.</p>
+                    </div>
+                    <div class="time-zone">
+                        <div class="digital-clock" id="liveClock">00:00:00 WIB</div>
+                        <div class="calendar-details">
+                            <div id="masehiDate">Kamis, 1 Januari 1970</div>
+                            <div id="hijriDate" style="font-weight: 600; color: #f59e0b;">1 Ramadan 1389 H</div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="info-slider-section">
+                    <div class="slider-wrapper">
+                        <div class="slider-container" id="sliderContainer">
+                            <div class="slide-item">
+                                <img src="https://images.unsplash.com/photo-1578311317614-2c262c5b7366?q=80&w=600&auto=format&fit=crop" alt="e-PA Kemenag">
+                                <div class="slide-content">
+                                    <span class="slide-badge">Pemberitahuan Penting</span>
+                                    <h3>Batas Akhir Sinkronisasi & Input Laporan e-PA Kemenag</h3>
+                                    <p><i class="fa-regular fa-calendar"></i> Pengisian periode berjalan maksimal akhir bulan ini</p>
+                                </div>
+                            </div>
+                            <div class="slide-item">
+                                <img src="https://images.unsplash.com/photo-1542810634-71277d95dcbb?q=80&w=600&auto=format&fit=crop" alt="Bimtek Moderasi">
+                                <div class="slide-content">
+                                    <span class="slide-badge">Agenda Utama</span>
+                                    <h3>Bimtek Penguatan Moderasi Beragama PD IPARI Rokan Hulu</h3>
+                                    <p><i class="fa-regular fa-calendar"></i> Senin depan | Aula Kantor Kemenag Pasir Pengaraian</p>
+                                </div>
+                            </div>
+                            <div class="slide-item">
+                                <img src="https://images.unsplash.com/photo-1517048676732-d65bc937f952?q=80&w=600&auto=format&fit=crop" alt="Aksi Sosial">
+                                <div class="slide-content">
+                                    <span class="slide-badge">Aksi Lapangan</span>
+                                    <h3>Sinergi UPZ & Penyuluh Tambusai Utara dalam Aksi Sedekah Jumat</h3>
+                                    <p><i class="fa-regular fa-calendar"></i> Dokumentasi: Penyaluran logistik di Desa Binaan</p>
+                                </div>
+                            </div>
+                            <div class="slide-item">
+                                <img src="https://images.unsplash.com/photo-1590079019111-ad01176f94d4?q=80&w=600&auto=format&fit=crop" alt="Bimbingan Sektoral">
+                                <div class="slide-content">
+                                    <span class="slide-badge">Bimbingan Masyarakat</span>
+                                    <h3>Penyuluhan Produk Halal & Konseling Remaja di KUA Rambah</h3>
+                                    <p><i class="fa-regular fa-calendar"></i> Giat berkala pendampingan objek bidang kepenyuluhan</p>
+                                </div>
+                            </div>
+                            <div class="slide-item">
+                                <img src="https://images.unsplash.com/photo-1531206715517-5cd3171d536c?q=80&w=600&auto=format&fit=crop" alt="8 Objek">
+                                <div class="slide-content">
+                                    <span class="slide-badge">Pojok Literasi</span>
+                                    <h3>Memahami 8 Objek Bidang Spesialisasi Penyuluh Agama Islam</h3>
+                                    <p><i class="fa-regular fa-calendar"></i> Simak infografis aturan regulasi kepenyuluhan terbaru</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slider-dots">
+                        <span class="dot active" onclick="currentSlide(0)"></span>
+                        <span class="dot" onclick="currentSlide(1)"></span>
+                        <span class="dot" onclick="currentSlide(2)"></span>
+                        <span class="dot" onclick="currentSlide(3)"></span>
+                        <span class="dot" onclick="currentSlide(4)"></span>
+                    </div>
+                </section>
+
+                <section class="chart-section">
+                    <h2><i class="fa-solid fa-chart-column" style="color:#0f766e;"></i> Grafik Sebaran Jumlah Penyuluh di 16 Kecamatan</h2>
+                    <div class="chart-scroll-wrapper">
+                        <div class="chart-container">
+                            <canvas id="sebaranChart"></canvas>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="menu-section">
+                    <h2>Menu Utama</h2>
+                    <div class="menu-grid">
+                        <div class="menu-card" onclick="navigateToView('infoView')">
+                            <div class="icon-wrapper color-3"><i class="fa-solid fa-bullhorn"></i></div>
+                            <h3>Info & Kegiatan</h3>
+                            <p>Akses detail pengumuman, agenda rakor, berkas surat undangan, serta jadwal aksi sosial.</p>
+                        </div>
+                        <div class="menu-card" onclick="alert('Membuka Sistem Catatan Lapangan Mandiri...')">
+                            <div class="icon-wrapper color-4"><i class="fa-solid fa-file-pen"></i></div>
+                            <h3>Catatan Lapangan</h3>
+                            <p>Buku saku digital untuk input laporan bimbingan harian dan mempermudah salin teks ke e-PA.</p>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <div id="infoView" class="app-view">
+                <div class="view-header">
+                    <button class="back-btn" onclick="navigateToView('homeView')"><i class="fa-solid fa-arrow-left"></i></button>
+                    <h2>Info & Kegiatan Resmi</h2>
+                </div>
+                
+                <div class="info-list-container" id="infoListContainer">
+                    </div>
+            </div>
+
+        </main>
+    </div>
+
+    <div class="modal-overlay" id="detailModalOverlay" onclick="closeDetailModal()">
+        <div class="detail-modal-card" onclick="event.stopPropagation()">
+            <img id="modalImage" src="" alt="Banner Kegiatan" class="modal-img">
+            <div class="modal-body">
+                <div class="modal-meta">
+                    <span id="modalTag" class="info-tag">Tag</span>
+                    <span id="modalDate" class="info-date">Tanggal</span>
+                </div>
+                <h3 id="modalTitle">Judul Detail Info</h3>
+                <p id="modalDescription">Konten lengkap deskripsi kegiatan...</p>
+                
+                <div id="modalAttachmentSection" style="display: none;">
+                    <div class="modal-attachment">
+                        <div><i class="fa-solid fa-file-pdf"></i> &nbsp;<span id="modalAttachmentName">surat_undangan.pdf</span></div>
+                        <button class="download-action-btn" onclick="alert('Mengunduh dokumen lampiran...')">Unduh</button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="close-modal-btn" onclick="closeDetailModal()">Kembali</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- DATA DATABASE INFO & KEGIATAN (SIMULASI INPUT DATA) ---
+        const infoDatabase = [
+            {
+                id: 1,
+                title: "Bimtek Penguatan Moderasi Beragama Pengurus Kemenag",
+                summary: "Diwajibkan bagi seluruh pengurus dan anggota kepenyuluhan wilayah Rokan Hulu.",
+                description: "Sehubungan dengan upaya penguatan pemahaman nilai keselarasan beragama, Kantor Kementerian Agama Kabupaten Rokan Hulu menginstruksikan seluruh Penyuluh Agama Islam (Fungsional & PPPK/Non-ASN) untuk menghadiri Bimbingan Teknis.\n\nHari/Tanggal: Senin, 13 Juli 2026\nWaktu: 08:00 WIB s.d Selesai\nTempat: Aula Kantor Kemenag Pasir Pengaraian\nCatatan: Memakai seragam batik IPARI resmi nasional.",
+                tag: "Agenda",
+                tagClass: "tag-agenda",
+                date: "11 Juli 2026",
+                image: "https://images.unsplash.com/photo-1542810634-71277d95dcbb?q=80&w=600&auto=format&fit=crop",
+                hasAttachment: true,
+                attachmentName: "Surat_Undangan_Bimtek_2026.pdf"
+            },
+            {
+                id: 2,
+                title: "Aksi Sedekah Jumat Kreatif UPZ & Penyuluh Kecamatan Tambusai Utara",
+                summary: "Penyaluran sembako dan logistik santunan di kawasan desa binaan Bangun Jaya.",
+                description: "Alhamdulillah, Penyuluh Agama Islam Kecamatan Tambusai Utara bersinergi dengan pengurus UPZ Desa Bangun Jaya telah selesai menyalurkan infak dan sedekah jumat berupa paket sembako lengkap dan santunan dana tunai kepada 45 KK yang masuk dalam kategori mustahik binaan daerah setempat.\n\nTerima kasih kepada seluruh donatur dan koordinator lapangan yang bertugas membantu kelancaran distribusi logistik.",
+                tag: "Aksi Sosial",
+                tagClass: "tag-sosial",
+                date: "10 Juli 2026",
+                image: "https://images.unsplash.com/photo-1517048676732-d65bc937f952?q=80&w=600&auto=format&fit=crop",
+                hasAttachment: false,
+                attachmentName: ""
+            },
+            {
+                id: 3,
+                title: "Surat Edaran Batas Akhir Input E-PA Kemenag Kuartal II",
+                summary: "Pengisian jurnal kerja mingguan dan e-dokumen wajib rampung akhir bulan ini.",
+                description: "Diberitahukan kepada seluruh rekan penyuluh, aplikasi e-PA pusat akan melakukan pemeliharaan server dan kunci data berkala pada akhir bulan ini pukul 23:59 WIB. Dimohon memeriksa seluruh isian materi penyuluhan kelompok binaan masing-masing.\n\nKeterlambatan input berakibat pada penundaan evaluasi kinerja bulanan.",
+                tag: "Unduhan Berkas",
+                tagClass: "tag-berkas",
+                date: "08 Juli 2026",
+                image: "https://images.unsplash.com/photo-1578311317614-2c262c5b7366?q=80&w=600&auto=format&fit=crop",
+                hasAttachment: true,
+                attachmentName: "SE_Penetapan_Batas_ePA.pdf"
+            }
+        ];
+
+        // --- RENDER DRAF LIST KE HALAMAN INFO & KEGIATAN ---
+        function renderInfoList() {
+            const container = document.getElementById('infoListContainer');
+            container.innerHTML = ""; // Bersihkan kontainer
+            
+            infoDatabase.forEach(item => {
+                const card = document.createElement('div');
+                card.className = "info-list-card";
+                card.onclick = () => openDetailModal(item.id); // Triger Detail Modal
+                
+                card.innerHTML = `
+                    <div class="info-card-left">
+                        <div class="info-badge-row">
+                            <span class="info-tag ${item.tagClass}">${item.tag}</span>
+                            <span class="info-date"><i class="fa-regular fa-calendar"></i> ${item.date}</span>
+                        </div>
+                        <h3>${item.title}</h3>
+                        <p>${item.summary}</p>
+                    </div>
+                    <div class="info-card-right">
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // --- BUKA MODAL DETAIL CARD ---
+        function openDetailModal(id) {
+            const item = infoDatabase.find(x => x.id === id);
+            if (!item) return;
+            
+            document.getElementById('modalImage').src = item.image;
+            document.getElementById('modalTag').className = `info-tag ${item.tagClass}`;
+            document.getElementById('modalTag').innerText = item.tag;
+            document.getElementById('modalDate').innerText = item.date;
+            document.getElementById('modalTitle').innerText = item.title;
+            document.getElementById('modalDescription').innerText = item.description;
+            
+            const attachmentSection = document.getElementById('modalAttachmentSection');
+            if (item.hasAttachment) {
+                attachmentSection.style.display = "block";
+                document.getElementById('modalAttachmentName').innerText = item.attachmentName;
+            } else {
+                attachmentSection.style.display = "none";
+            }
+            
+            document.getElementById('detailModalOverlay').classList.add('show');
+        }
+
+        // --- TUTUP MODAL DETAIL CARD ---
+        function closeDetailModal() {
+            document.getElementById('detailModalOverlay').classList.remove('show');
+        }
+
+        // --- NAVIGASI ANTAR HALAMAN (VIEW SWITCHER) ---
+        function navigateToView(viewId, sidebarItem = null) {
+            // Sembunyikan semua views
+            document.querySelectorAll('.app-view').forEach(view => {
+                view.classList.remove('active-view');
+            });
+            // Tampilkan view yang dipilih
+            document.getElementById(viewId).classList.add('active-view');
+            
+            // Kelola class active di sidebar link
+            if(sidebarItem) {
+                document.querySelectorAll('.nav-item').forEach(item => {
+                    item.classList.remove('current-page');
+                });
+                sidebarItem.classList.add('current-page');
+            }
+
+            // Jika membuka infoView, load datanya
+            if (viewId === 'infoView') {
+                renderInfoList();
+            }
+        }
+
+        // --- JAM DIGITAL & KALENDER ---
+        function updateDateTime() {
+            try {
+                const now = new Date();
+                let hours = String(now.getHours()).padStart(2, '0');
+                let minutes = String(now.getMinutes()).padStart(2, '0');
+                let seconds = String(now.getSeconds()).padStart(2, '0');
+                document.getElementById('liveClock').innerText = `${hours}:${minutes}:${seconds} WIB`;
+                
+                let greeting = "Selamat Malam";
+                if (hours >= 5 && hours < 11) greeting = "Selamat Pagi";
+                else if (hours >= 11 && hours < 15) greeting = "Selamat Siang";
+                else if (hours >= 15 && hours < 18) greeting = "Selamat Sore";
+                document.getElementById('greetingText').innerText = greeting + ", Rekan Penyuluh";
+
+                const optionsMasehi = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+                document.getElementById('masehiDate').innerText = now.toLocaleDateString('id-ID', optionsMasehi);
+
+                const formatterHijri = new Intl.DateTimeFormat('id-ID-u-ca-islamic-umalqura', {
+                    day: 'numeric', month: 'long', year: 'numeric'
+                });
+                document.getElementById('hijriDate').innerText = formatterHijri.format(now) + " H";
+            } catch (error) {
+                document.getElementById('hijriDate').innerText = "14 Safar 1448 H";
+            }
+        }
+        updateDateTime();
+        setInterval(updateDateTime, 1000);
+
+        // --- CHART SEBARAN ---
+        const ctx = document.getElementById('sebaranChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            plugins: [ChartDataLabels],
+            data: {
+                labels: ['Bangun Purba', 'Bonai Darussalam', 'Kabun', 'Kepenuhan', 'Kepenuhan Hulu', 'Kunto Darussalam', 'Pagaran Tapah', 'Pendalian IV Koto', 'Rambah', 'Rambah Hilir', 'Rambah Samo', 'Rokan IV Koto', 'Tambusai', 'Tambusai Utara', 'Tandun', 'Ujung Batu'],
+                datasets: [{
+                    label: 'Jumlah Penyuluh',
+                    data: [6, 5, 8, 9, 5, 11, 6, 5, 15, 9, 10, 7, 12, 14, 10, 13],
+                    backgroundColor: function(context) {
+                        return context.dataset.data[context.dataIndex] >= 14 ? 'rgba(217, 119, 6, 0.85)' : 'rgba(15, 118, 110, 0.85)';
+                    },
+                    borderColor: '#0f766e', borderWidth: 1, borderRadius: 6
+                }]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                plugins: { legend: { display: false }, datalabels: { anchor: 'end', align: 'top', color: '#374151', font: { weight: '700', size: 11 } } },
+                scales: { y: { beginAtZero: true, grid: { color: '#f3f4f6' }, ticks: { stepSize: 2 } }, x: { grid: { display: false } } }
+            }
+        });
+
+        // --- SIDEBAR TOGGLE ---
+        function toggleSidebar() {
+            const sidebar = document.getElementById('appSidebar');
+            const toggleIcon = document.getElementById('toggleIcon');
+            sidebar.classList.toggle('minimized');
+            if(sidebar.classList.contains('minimized')) {
+                toggleIcon.className = "fa-solid fa-chevron-right";
+                document.getElementById('profilDropdown').classList.remove('show');
+                document.getElementById('materiDropdown').classList.remove('show');
+            } else {
+                toggleIcon.className = "fa-solid fa-bars";
+            }
+        }
+
+        function handleMenuDropdownClick(dropdownId, buttonId, mobileSheetId) {
+            if (window.innerWidth <= 768) {
+                document.getElementById(mobileSheetId).classList.add('show');
+            } else {
+                const dropdown = document.getElementById(dropdownId);
+                const menuBtn = document.getElementById(buttonId);
+                const sidebar = document.getElementById('appSidebar');
+                if(sidebar.classList.contains('minimized')) toggleSidebar();
+                
+                if(dropdownId === 'profilDropdown') {
+                    document.getElementById('materiDropdown').classList.remove('show');
+                    document.getElementById('materiMenuBtn').classList.remove('open');
+                } else {
+                    document.getElementById('profilDropdown').classList.remove('show');
+                    document.getElementById('profilMenuBtn').classList.remove('open');
+                }
+                dropdown.classList.toggle('show');
+                menuBtn.classList.toggle('open');
+            }
+        }
+
+        function closeMobileSheet(sheetId) { document.getElementById(sheetId).classList.remove('show'); }
+
+        // --- SLIDER CAROUSEL AUTO ---
+        let currentIndex = 0;
+        const slides = document.querySelectorAll('.slide-item');
+        const dots = document.querySelectorAll('.dot');
+        function showSlide(index) {
+            if (index >= slides.length) currentIndex = 0;
+            else if (index < 0) currentIndex = slides.length - 1;
+            else currentIndex = index;
+            document.getElementById('sliderContainer').style.transform = `translateX(-${currentIndex * 20}%)`;
+            dots.forEach(dot => dot.classList.remove('active'));
+            dots[currentIndex].classList.add('active');
+        }
+        function currentSlide(index) { showSlide(index); }
+        setInterval(() => { showSlide(currentIndex + 1); }, 5000);
+    </script>
+</body>
+</html>
