@@ -353,6 +353,16 @@
         .sheet-item { display: flex; align-items: center; gap: 14px; padding: 14px; background-color: #f9fafb; border-radius: 12px; text-decoration: none; color: #374151; font-weight: 500; font-size: 14px; }
         .sheet-item i { color: #0f766e; font-size: 18px; }
 
+        /* GAYA UNTUK LOGO GAMBAR BARU (CARA 1) */
+        .app-logo-img {
+            width: 42px;
+            height: 42px;
+            object-fit: contain;
+            border-radius: 6px;
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 2px;
+        }
+
         @media (max-width: 768px) {
             body { flex-direction: column; }
             .sidebar { width: 100%; height: 64px; position: fixed; bottom: 0; top: auto; flex-direction: row; box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.05); border-radius: 16px 16px 0 0; z-index: 1000; }
@@ -463,7 +473,8 @@
         <header class="app-header">
             <div class="header-content">
                 <div class="logo-zone">
-                    <div class="logo-placeholder"><i class="fa-solid fa-mosque"></i></div>
+                    <!-- LOGO INSTANSI BERUPA GAMBAR (CARA 1) -->
+                    <img src="https://raw.githubusercontent.com/iparirokanhulu/web-ipari/refs/heads/main/Favicon-Ipari-Tuban.png" alt="Logo IPARI" class="app-logo-img">
                     <div>
                         <h1>IPARI ROKAN HULU</h1>
                         <p>Sistem Informasi & Pendukung Penyuluh Agama</p>
@@ -513,7 +524,6 @@
                 </section>
 
                 <section class="menu-section">
-                
                     <div class="menu-grid">
                         <div class="menu-card" onclick="navigateToView('infoView')">
                             <div class="icon-wrapper color-3"><i class="fa-solid fa-bullhorn"></i></div>
@@ -561,7 +571,6 @@
     </div>
 
     <script>
-        // Tautan Web App Apps Script Anda
         const SHEET_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwS8yrUNMXOK1nmeifMj3gvImwt87f7fKGjethmoshxhsFA6ZMDU_DJ-Y3MLBzCiQqAHg/exec"; 
 
         let infoDatabase = [];
@@ -575,7 +584,6 @@
             const dotsContainer = document.getElementById('sliderDotsContainer');
             
             try {
-                // Memanggil URL Apps Script dengan parameter ?page=info_slider
                 const response = await fetch(`${SHEET_WEB_APP_URL}?page=info_slider`);
                 if (!response.ok) throw new Error("Gagal memuat slider");
                 
@@ -589,7 +597,6 @@
                 container.innerHTML = "";
                 dotsContainer.innerHTML = "";
                 
-                // Set total lebar penampung slide
                 container.style.width = `${sliderData.length * 100}%`;
                 
                 sliderData.forEach((item, index) => {
@@ -661,7 +668,6 @@
             `;
 
             try {
-                // Default memanggil tab info_kegiatan
                 const response = await fetch(`${SHEET_WEB_APP_URL}?page=info_kegiatan`);
                 if (!response.ok) throw new Error("Network response error");
                 
@@ -772,15 +778,22 @@
             }
         }
 
+        // --- SISTEM AKURASI TANGGAL HIJRIYAH DENGAN KOREKSI ---
         function getAccurateHijriDate(date) {
             try {
+                // KOREKSI HARI: -1 untuk mengurangi 1 hari karena bawaan sistem lebih 1 hari
+                const HIJRI_OFFSET = -1; 
+                
+                const adjustedDate = new Date(date);
+                adjustedDate.setDate(adjustedDate.getDate() + HIJRI_OFFSET);
+
                 const formatter = new Intl.DateTimeFormat('id-ID-u-ca-islamic-umalqura', {
                     day: 'numeric',
                     month: 'numeric',
                     year: 'numeric'
                 });
                 
-                const parts = formatter.format(date).split('/');
+                const parts = formatter.format(adjustedDate).split('/');
                 const day = parts[0];
                 const monthIndex = parseInt(parts[1], 10);
                 const year = parts[2].replace(/\D/g, ""); 
@@ -816,18 +829,17 @@
                 document.getElementById('masehiDate').innerText = now.toLocaleDateString('id-ID', optionsMasehi);
                 document.getElementById('hijriDate').innerText = getAccurateHijriDate(now);
             } catch (error) {
-                document.getElementById('hijriDate').innerText = "14 Safar 1448 H";
+                document.getElementById('hijriDate').innerText = "13 Safar 1448 H";
             }
         }
         
-        // JALANKAN PROSES AWAL SAAT HALAMAN DIMUAT
         document.addEventListener("DOMContentLoaded", () => {
             updateDateTime();
             setInterval(updateDateTime, 1000);
-            fetchSliderData(); // Mengambil data slider dari Sheets
+            fetchSliderData();
         });
 
-        // --- SISTEM PEMBUATAN GRAFIK (ANGKA DIUBAH WARNA PUTIH #FFFFFF) ---
+        // --- SISTEM GRAFIK SEBARAN PENYULUH ---
         const ctx = document.getElementById('sebaranChart').getContext('2d');
         new Chart(ctx, {
             type: 'bar',
@@ -850,7 +862,7 @@
                     datalabels: { 
                         anchor: 'end', 
                         align: 'top', 
-                        color: '#6b7280', // Warna angka dirubah menjadi PUTIH agar lebih jelas
+                        color: '#6b7280', 
                         font: { weight: '700', size: 11 } 
                     } 
                 },
