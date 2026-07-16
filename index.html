@@ -203,11 +203,11 @@
 
         .calendar-details { font-size: 12px; color: rgba(255, 255, 255, 0.9); line-height: 1.4; }
 
-        /* CAROUSEL SLIDER */
+        /* CAROUSEL SLIDER DINAMIS */
         .info-slider-section { margin-bottom: 24px; position: relative; }
         .slider-wrapper { width: 100%; overflow: hidden; border-radius: 16px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05); }
-        .slider-container { display: flex; width: 500%; transition: transform 0.5s ease-in-out; }
-        .slide-item { width: 20%; flex-shrink: 0; position: relative; }
+        .slider-container { display: flex; width: 100%; transition: transform 0.5s ease-in-out; }
+        .slide-item { flex-shrink: 0; position: relative; }
         .slide-item img { width: 100%; height: 280px; object-fit: cover; display: block; }
         
         .slide-content {
@@ -231,7 +231,7 @@
         .chart-container { position: relative; width: 100%; height: 320px; min-width: 750px; }
 
         .menu-section h2 { font-size: 15px; font-weight: 700; color: #4b5563; margin-bottom: 16px; }
-        .menu-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+        .menu-grid { display: grid; grid-template-columns: repeat(1, 1fr); gap: 16px; }
         
         .menu-card {
             background-color: #fff; padding: 24px; border-radius: 16px;
@@ -243,7 +243,6 @@
         
         .icon-wrapper { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 22px; margin-bottom: 16px; }
         .color-3 { background-color: #fff7ed; color: #ea580c; }
-        .color-4 { background-color: #fdf2f8; color: #db2777; }
         
         .menu-card h3 { font-size: 16px; font-weight: 600; color: #1f2937; margin-bottom: 6px; }
         .menu-card p { font-size: 13px; color: #9ca3af; line-height: 1.4; }
@@ -402,6 +401,13 @@
                     <a href="#" class="sub-nav-item" onclick="alert('Membuka Halaman Materi Khutbah...')"><i class="fa-solid fa-scroll" style="font-size:13px; margin-right:6px;"></i> <span>Materi Khutbah</span></a>
                 </div>
             </div>
+
+            <div onclick="alert('Membuka Sistem Catatan Lapangan Mandiri...')" class="nav-item">
+                <div class="nav-link-content">
+                    <i class="fa-solid fa-file-pen"></i>
+                    <span>Catatan Lapangan</span>
+                </div>
+            </div>
             
             <div class="nav-item-wrapper">
                 <div class="nav-item" id="profilMenuBtn" onclick="handleMenuDropdownClick('profilDropdown', 'profilMenuBtn', 'sheetProfil')">
@@ -487,55 +493,14 @@
                 <section class="info-slider-section">
                     <div class="slider-wrapper">
                         <div class="slider-container" id="sliderContainer">
-                            <div class="slide-item">
-                                <img src="https://images.unsplash.com/photo-1578311317614-2c262c5b7366?q=80&w=600&auto=format&fit=crop" alt="e-PA Kemenag">
-                                <div class="slide-content">
-                                    <span class="slide-badge">Pemberitahuan Penting</span>
-                                    <h3>Batas Akhir Sinkronisasi & Input Laporan e-PA Kemenag</h3>
-                                    <p><i class="fa-regular fa-calendar"></i> Pengisian periode berjalan maksimal akhir bulan ini</p>
-                                </div>
-                            </div>
-                            <div class="slide-item">
-                                <img src="https://images.unsplash.com/photo-1542810634-71277d95dcbb?q=80&w=600&auto=format&fit=crop" alt="Bimtek Moderasi">
-                                <div class="slide-content">
-                                    <span class="slide-badge">Agenda Utama</span>
-                                    <h3>Bimtek Penguatan Moderasi Beragama PD IPARI Rokan Hulu</h3>
-                                    <p><i class="fa-regular fa-calendar"></i> Senin depan | Aula Kantor Kemenag Pasir Pengaraian</p>
-                                </div>
-                            </div>
-                            <div class="slide-item">
-                                <img src="https://images.unsplash.com/photo-1517048676732-d65bc937f952?q=80&w=600&auto=format&fit=crop" alt="Aksi Sosial">
-                                <div class="slide-content">
-                                    <span class="slide-badge">Aksi Lapangan</span>
-                                    <h3>Sinergi UPZ & Penyuluh Tambusai Utara dalam Aksi Sedekah Jumat</h3>
-                                    <p><i class="fa-regular fa-calendar"></i> Dokumentasi: Penyaluran logistik di Desa Binaan</p>
-                                </div>
-                            </div>
-                            <div class="slide-item">
-                                <img src="https://images.unsplash.com/photo-1590079019111-ad01176f94d4?q=80&w=600&auto=format&fit=crop" alt="Bimbingan Sektoral">
-                                <div class="slide-content">
-                                    <span class="slide-badge">Bimbingan Masyarakat</span>
-                                    <h3>Penyuluhan Produk Halal & Konseling Remaja di KUA Rambah</h3>
-                                    <p><i class="fa-regular fa-calendar"></i> Giat berkala pendampingan objek bidang kepenyuluhan</p>
-                                </div>
-                            </div>
-                            <div class="slide-item">
-                                <img src="https://images.unsplash.com/photo-1531206715517-5cd3171d536c?q=80&w=600&auto=format&fit=crop" alt="8 Objek">
-                                <div class="slide-content">
-                                    <span class="slide-badge">Pojok Literasi</span>
-                                    <h3>Memahami 8 Objek Bidang Spesialisasi Penyuluh Agama Islam</h3>
-                                    <p><i class="fa-regular fa-calendar"></i> Simak infografis aturan regulasi kepenyuluhan terbaru</p>
-                                </div>
+                            <div style="text-align: center; padding: 40px; color: #6b7280; width: 100%;">
+                                <i class="fa-solid fa-spinner fa-spin" style="font-size: 20px; color: #0f766e; margin-bottom: 8px;"></i>
+                                <p style="font-size: 13px;">Mengambil info banner...</p>
                             </div>
                         </div>
                     </div>
-                    <div class="slider-dots">
-                        <span class="dot active" onclick="currentSlide(0)"></span>
-                        <span class="dot" onclick="currentSlide(1)"></span>
-                        <span class="dot" onclick="currentSlide(2)"></span>
-                        <span class="dot" onclick="currentSlide(3)"></span>
-                        <span class="dot" onclick="currentSlide(4)"></span>
-                    </div>
+                    <div class="slider-dots" id="sliderDotsContainer">
+                        </div>
                 </section>
 
                 <section class="chart-section">
@@ -548,17 +513,12 @@
                 </section>
 
                 <section class="menu-section">
-                    <h2>Menu Utama</h2>
+                
                     <div class="menu-grid">
                         <div class="menu-card" onclick="navigateToView('infoView')">
                             <div class="icon-wrapper color-3"><i class="fa-solid fa-bullhorn"></i></div>
                             <h3>Info & Kegiatan</h3>
                             <p>Akses detail pengumuman, agenda rakor, berkas surat undangan, serta jadwal aksi sosial.</p>
-                        </div>
-                        <div class="menu-card" onclick="alert('Membuka Sistem Catatan Lapangan Mandiri...')">
-                            <div class="icon-wrapper color-4"><i class="fa-solid fa-file-pen"></i></div>
-                            <h3>Catatan Lapangan</h3>
-                            <p>Buku saku digital untuk input laporan bimbingan harian dan mempermudah salin teks ke e-PA.</p>
                         </div>
                     </div>
                 </section>
@@ -570,8 +530,7 @@
                     <h2>Info & Kegiatan Resmi</h2>
                 </div>
                 
-                <div class="info-list-container" id="infoListContainer">
-                     </div>
+                <div class="info-list-container" id="infoListContainer"></div>
             </div>
 
         </main>
@@ -602,17 +561,96 @@
     </div>
 
     <script>
-        // ==========================================
-        // CONFIG: LINK GOOGLE SHEETS WEB APP URL
-        // ==========================================
-        // GANTI string kosong ini dengan URL Deployment Google Apps Script Anda
-        const SHEET_WEB_APP_URL = "https://script.google.com/macros/s/AKfycby3g7_B4b3hH-IovmH783fD4AepbM44DqA_1yFv_uT1T6DqP6iN97u48K55WlK9uM_m/exec"; 
+        // Tautan Web App Apps Script Anda
+        const SHEET_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwS8yrUNMXOK1nmeifMj3gvImwt87f7fKGjethmoshxhsFA6ZMDU_DJ-Y3MLBzCiQqAHg/exec"; 
 
-        // Variabel lokal penyimpan data database dari Sheet
         let infoDatabase = [];
-        let currentActiveAttachmentUrl = ""; // Menyimpan tautan berkas unduhan aktif
+        let currentActiveAttachmentUrl = ""; 
+        let currentIndex = 0;
+        let autoSliderInterval;
 
-        // --- FETCH DATA INFO KEGIATAN DARI GOOGLE SHEET ---
+        // --- SISTEM SLIDER BANNER DINAMIS ---
+        async function fetchSliderData() {
+            const container = document.getElementById('sliderContainer');
+            const dotsContainer = document.getElementById('sliderDotsContainer');
+            
+            try {
+                // Memanggil URL Apps Script dengan parameter ?page=info_slider
+                const response = await fetch(`${SHEET_WEB_APP_URL}?page=info_slider`);
+                if (!response.ok) throw new Error("Gagal memuat slider");
+                
+                const sliderData = await response.json();
+                
+                if (!sliderData || sliderData.length === 0 || sliderData.error) {
+                    container.innerHTML = `<div style="text-align: center; padding: 30px; color: #9ca3af; width: 100%; font-size: 13px;">Tidak ada info banner.</div>`;
+                    return;
+                }
+                
+                container.innerHTML = "";
+                dotsContainer.innerHTML = "";
+                
+                // Set total lebar penampung slide
+                container.style.width = `${sliderData.length * 100}%`;
+                
+                sliderData.forEach((item, index) => {
+                    const slideItem = document.createElement('div');
+                    slideItem.className = "slide-item";
+                    slideItem.style.width = `${100 / sliderData.length}%`;
+                    
+                    slideItem.innerHTML = `
+                        <img src="${item.image || 'https://images.unsplash.com/photo-1542810634-71277d95dcbb?q=80&w=600&auto=format&fit=crop'}" alt="${item.title}">
+                        <div class="slide-content">
+                            <span class="slide-badge">${item.tag || 'Info'}</span>
+                            <h3>${item.title || 'Tanpa Judul'}</h3>
+                            <p><i class="fa-regular fa-calendar"></i> ${item.date || '-'}</p>
+                        </div>
+                    `;
+                    container.appendChild(slideItem);
+                    
+                    const dot = document.createElement('span');
+                    dot.className = index === 0 ? "dot active" : "dot";
+                    dot.onclick = () => currentSlideDynamic(index, sliderData.length);
+                    dotsContainer.appendChild(dot);
+                });
+                
+                startAutoSlider(sliderData.length);
+                
+            } catch (error) {
+                console.error("Gagal melakukan fetch data slider: ", error);
+                container.innerHTML = `<div style="text-align: center; padding: 30px; color: #ef4444; width: 100%; font-size: 13px;">Gagal memuat banner dari Google Sheets.</div>`;
+            }
+        }
+
+        function showSlideDynamic(index, totalSlides) {
+            const container = document.getElementById('sliderContainer');
+            const dots = document.querySelectorAll('.slider-dots .dot');
+            
+            if (index >= totalSlides) currentIndex = 0;
+            else if (index < 0) currentIndex = totalSlides - 1;
+            else currentIndex = index;
+            
+            const percentageShift = currentIndex * (100 / totalSlides);
+            container.style.transform = `translateX(-${percentageShift}%)`;
+            
+            dots.forEach(dot => dot.classList.remove('active'));
+            if(dots[currentIndex]) dots[currentIndex].classList.add('active');
+        }
+
+        function currentSlideDynamic(index, totalSlides) {
+            clearInterval(autoSliderInterval);
+            showSlideDynamic(index, totalSlides);
+            startAutoSlider(totalSlides);
+        }
+
+        function startAutoSlider(totalSlides) {
+            clearInterval(autoSliderInterval);
+            autoSliderInterval = setInterval(() => {
+                currentIndex++;
+                showSlideDynamic(currentIndex, totalSlides);
+            }, 5000);
+        }
+
+        // --- SISTEM PEMBACA MENU INFO & KEGIATAN LAINNYA ---
         async function fetchInfoData() {
             const container = document.getElementById('infoListContainer');
             container.innerHTML = `
@@ -622,29 +660,16 @@
                 </div>
             `;
 
-            if (!SHEET_WEB_APP_URL || SHEET_WEB_APP_URL.includes("PASTE_URL")) {
-                container.innerHTML = `
-                    <div style="text-align: center; padding: 30px; color: #ea580c; background-color: #fff8f6; border-radius:12px; border: 1px dashed #fdba74;">
-                        <i class="fa-solid fa-triangle-exclamation" style="font-size: 24px; margin-bottom: 10px;"></i>
-                        <p style="font-size: 14px; font-weight: 600;">Google Sheet Belum Terhubung</p>
-                        <p style="font-size: 12px; margin-top: 4px; color: #6b7280;">Silakan isi variabel SHEET_WEB_APP_URL di dalam kode dengan link Apps Script Anda.</p>
-                    </div>
-                `;
-                return;
-            }
-
             try {
-                const response = await fetch(SHEET_WEB_APP_URL);
+                // Default memanggil tab info_kegiatan
+                const response = await fetch(`${SHEET_WEB_APP_URL}?page=info_kegiatan`);
                 if (!response.ok) throw new Error("Network response error");
                 
                 const data = await response.json();
-                
-                // Urutkan ID terbesar ke terkecil (agar data terbaru ada di paling atas)
                 infoDatabase = data.sort((a, b) => b.id - a.id);
-                
                 renderInfoList();
             } catch (error) {
-                console.error("Gagal melakukan fetch data: ", error);
+                console.error("Gagal melakukan fetch data info: ", error);
                 container.innerHTML = `
                     <div style="text-align: center; padding: 40px; color: #ef4444;">
                         <i class="fa-solid fa-circle-exclamation" style="font-size: 28px; margin-bottom: 12px;"></i>
@@ -655,7 +680,6 @@
             }
         }
 
-        // --- RENDER DAFTAR LIST KE LAYAR ---
         function renderInfoList() {
             const container = document.getElementById('infoListContainer');
             container.innerHTML = ""; 
@@ -678,11 +702,11 @@
                 card.innerHTML = `
                     <div class="info-card-left">
                         <div class="info-badge-row">
-                            <span class="info-tag ${item.tagClass}">${item.tag}</span>
-                            <span class="info-date"><i class="fa-regular fa-calendar"></i> ${item.date}</span>
+                            <span class="info-tag ${item.tagClass || 'tag-agenda'}">${item.tag || 'Info'}</span>
+                            <span class="info-date"><i class="fa-regular fa-calendar"></i> ${item.date || '-'}</span>
                         </div>
-                        <h3>${item.title}</h3>
-                        <p>${item.summary}</p>
+                        <h3>${item.title || 'Tanpa Judul'}</h3>
+                        <p>${item.summary || ''}</p>
                     </div>
                     <div class="info-card-right">
                         <i class="fa-solid fa-chevron-right"></i>
@@ -692,27 +716,24 @@
             });
         }
 
-        // --- BUKA MODAL DETAIL CARD ---
         function openDetailModal(id) {
             const item = infoDatabase.find(x => Number(x.id) === Number(id));
             if (!item) return;
             
             document.getElementById('modalImage').src = item.image || "https://images.unsplash.com/photo-1542810634-71277d95dcbb?q=80&w=600&auto=format&fit=crop";
-            document.getElementById('modalTag').className = `info-tag ${item.tagClass}`;
-            document.getElementById('modalTag').innerText = item.tag;
-            document.getElementById('modalDate').innerText = item.date;
-            document.getElementById('modalTitle').innerText = item.title;
-            document.getElementById('modalDescription').innerText = item.description;
+            document.getElementById('modalTag').className = `info-tag ${item.tagClass || 'tag-agenda'}`;
+            document.getElementById('modalTag').innerText = item.tag || 'Info';
+            document.getElementById('modalDate').innerText = item.date || '-';
+            document.getElementById('modalTitle').innerText = item.title || 'Tanpa Judul';
+            document.getElementById('modalDescription').innerText = item.description || '';
             
             const attachmentSection = document.getElementById('modalAttachmentSection');
-            
-            // Konversi nilai string 'true' / 'false' dari Google Sheets
             const hasAttachment = String(item.hasAttachment).toUpperCase() === 'TRUE' || item.hasAttachment === true;
             
             if (hasAttachment && item.attachmentUrl) {
                 attachmentSection.style.display = "block";
                 document.getElementById('modalAttachmentName').innerText = item.attachmentName || "Berkas Lampiran";
-                currentActiveAttachmentUrl = item.attachmentUrl; // Simpan URL untuk aksi klik unduh
+                currentActiveAttachmentUrl = item.attachmentUrl; 
             } else {
                 attachmentSection.style.display = "none";
                 currentActiveAttachmentUrl = "";
@@ -721,7 +742,6 @@
             document.getElementById('detailModalOverlay').classList.add('show');
         }
 
-        // --- FUNGSI UNDUH BERKAS LAMPIRAN ---
         function downloadAttachmentFile() {
             if (currentActiveAttachmentUrl) {
                 window.open(currentActiveAttachmentUrl, '_blank');
@@ -730,12 +750,10 @@
             }
         }
 
-        // --- TUTUP MODAL DETAIL CARD ---
         function closeDetailModal() {
             document.getElementById('detailModalOverlay').classList.remove('show');
         }
 
-        // --- NAVIGASI ANTAR HALAMAN (VIEW SWITCHER) ---
         function navigateToView(viewId, sidebarItem = null) {
             document.querySelectorAll('.app-view').forEach(view => {
                 view.classList.remove('active-view');
@@ -749,16 +767,13 @@
                 sidebarItem.classList.add('current-page');
             }
 
-            // Jika masuk ke halaman Info & Kegiatan, otomatis jalankan Fetching data
             if (viewId === 'infoView') {
                 fetchInfoData();
             }
         }
 
-        // --- SOLUSI PENANGGALAN HIJRIAH AKURAT DI GITHUB PAGES ---
         function getAccurateHijriDate(date) {
             try {
-                // Ambil tanggal murni dari sistem Kalender Islam
                 const formatter = new Intl.DateTimeFormat('id-ID-u-ca-islamic-umalqura', {
                     day: 'numeric',
                     month: 'numeric',
@@ -766,12 +781,10 @@
                 });
                 
                 const parts = formatter.format(date).split('/');
-                // Format hasil pembagian biasanya: [Tanggal, Bulan, Tahun]
                 const day = parts[0];
                 const monthIndex = parseInt(parts[1], 10);
-                const year = parts[2].replace(/\D/g, ""); // Ambil angka tahun saja
+                const year = parts[2].replace(/\D/g, ""); 
 
-                // Nama-nama bulan Hijriah standar Indonesia
                 const hijriMonths = [
                     "Muharram", "Safar", "Rabi'ul Awal", "Rabi'ul Akhir",
                     "Jumadil Awal", "Jumadil Akhir", "Rajab", "Sya'ban",
@@ -781,11 +794,10 @@
                 const monthName = hijriMonths[monthIndex - 1];
                 return `${day} ${monthName} ${year} H`;
             } catch (e) {
-                return "14 Safar 1448 H"; // Fallback aman jika browser tidak mendukung Intl
+                return "14 Safar 1448 H"; 
             }
         }
 
-        // --- JAM DIGITAL & KALENDER LIVE ---
         function updateDateTime() {
             try {
                 const now = new Date();
@@ -802,17 +814,20 @@
 
                 const optionsMasehi = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
                 document.getElementById('masehiDate').innerText = now.toLocaleDateString('id-ID', optionsMasehi);
-
-                // Menggunakan fungsi penanggalan Hijriah yang baru & akurat
                 document.getElementById('hijriDate').innerText = getAccurateHijriDate(now);
             } catch (error) {
                 document.getElementById('hijriDate').innerText = "14 Safar 1448 H";
             }
         }
-        updateDateTime();
-        setInterval(updateDateTime, 1000);
+        
+        // JALANKAN PROSES AWAL SAAT HALAMAN DIMUAT
+        document.addEventListener("DOMContentLoaded", () => {
+            updateDateTime();
+            setInterval(updateDateTime, 1000);
+            fetchSliderData(); // Mengambil data slider dari Sheets
+        });
 
-        // --- CHART SEBARAN ---
+        // --- SISTEM PEMBUATAN GRAFIK (ANGKA DIUBAH WARNA PUTIH #FFFFFF) ---
         const ctx = document.getElementById('sebaranChart').getContext('2d');
         new Chart(ctx, {
             type: 'bar',
@@ -821,7 +836,7 @@
                 labels: ['Bangun Purba', 'Bonai Darussalam', 'Kabun', 'Kepenuhan', 'Kepenuhan Hulu', 'Kunto Darussalam', 'Pagaran Tapah', 'Pendalian IV Koto', 'Rambah', 'Rambah Hilir', 'Rambah Samo', 'Rokan IV Koto', 'Tambusai', 'Tambusai Utara', 'Tandun', 'Ujung Batu'],
                 datasets: [{
                     label: 'Jumlah Penyuluh',
-                    data: [6, 5, 8, 9, 5, 11, 6, 5, 15, 9, 10, 7, 12, 14, 10, 13],
+                    data: [6, 1, 8, 9, 5, 11, 6, 5, 15, 9, 10, 7, 12, 2, 10, 13],
                     backgroundColor: function(context) {
                         return context.dataset.data[context.dataIndex] >= 14 ? 'rgba(217, 119, 6, 0.85)' : 'rgba(15, 118, 110, 0.85)';
                     },
@@ -832,13 +847,17 @@
                 responsive: true, maintainAspectRatio: false,
                 plugins: { 
                     legend: { display: false }, 
-                    datalabels: { anchor: 'end', align: 'top', color: '#374151', font: { weight: '700', size: 11 } } 
+                    datalabels: { 
+                        anchor: 'end', 
+                        align: 'top', 
+                        color: '#6b7280', // Warna angka dirubah menjadi PUTIH agar lebih jelas
+                        font: { weight: '700', size: 11 } 
+                    } 
                 },
                 scales: { y: { beginAtZero: true, grid: { color: '#f3f4f6' }, ticks: { stepSize: 2 } }, x: { grid: { display: false } } }
             }
         });
 
-        // --- SIDEBAR TOGGLE ---
         function toggleSidebar() {
             const sidebar = document.getElementById('appSidebar');
             const toggleIcon = document.getElementById('toggleIcon');
@@ -874,21 +893,6 @@
         }
 
         function closeMobileSheet(sheetId) { document.getElementById(sheetId).classList.remove('show'); }
-
-        // --- SLIDER CAROUSEL AUTO ---
-        let currentIndex = 0;
-        const slides = document.querySelectorAll('.slide-item');
-        const dots = document.querySelectorAll('.dot');
-        function showSlide(index) {
-            if (index >= slides.length) currentIndex = 0;
-            else if (index < 0) currentIndex = slides.length - 1;
-            else currentIndex = index;
-            document.getElementById('sliderContainer').style.transform = `translateX(-${currentIndex * 20}%)`;
-            dots.forEach(dot => dot.classList.remove('active'));
-            dots[currentIndex].classList.add('active');
-        }
-        function currentSlide(index) { showSlide(index); }
-        setInterval(() => { showSlide(currentIndex + 1); }, 5000);
     </script>
 </body>
 </html>
