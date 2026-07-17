@@ -142,20 +142,17 @@
         .header-content { display: flex; justify-content: space-between; align-items: center; }
         .logo-zone { display: flex; align-items: center; gap: 12px; }
 
-        .logo-placeholder {
-            width: 40px;
-            height: 40px;
-            background-color: rgba(255, 255, 255, 0.2);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
+        .app-logo-img {
+            width: 42px;
+            height: 42px;
+            object-fit: contain;
+            border-radius: 6px;
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 2px;
         }
 
         .logo-zone h1 { font-size: 18px; font-weight: 700; }
         .logo-zone p { font-size: 12px; opacity: 0.8; }
-        .notif-btn { background: none; border: none; color: #fff; font-size: 20px; cursor: pointer; }
 
         .app-container { padding: 24px; padding-bottom: 80px; }
 
@@ -231,7 +228,7 @@
         .chart-container { position: relative; width: 100%; height: 320px; min-width: 750px; }
 
         .menu-section h2 { font-size: 15px; font-weight: 700; color: #4b5563; margin-bottom: 16px; }
-        .menu-grid { display: grid; grid-template-columns: repeat(1, 1fr); gap: 16px; }
+        .menu-grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
         
         .menu-card {
             background-color: #fff; padding: 24px; border-radius: 16px;
@@ -280,6 +277,39 @@
         .info-list-card h3 { font-size: 15px; font-weight: 600; color: #1f2937; }
         .info-list-card p { font-size: 13px; color: #6b7280; }
         .info-card-right i { color: #9ca3af; font-size: 16px; }
+
+        /* --- HALAMAN BANK MATERI --- */
+        .tabs-header { display: flex; gap: 10px; margin-bottom: 20px; background: #e2e8f0; padding: 5px; border-radius: 12px; }
+        .tab-btn { flex: 1; padding: 12px; text-align: center; background: none; border: none; font-weight: 600; font-size: 14px; color: #4b5563; border-radius: 8px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .tab-btn.active { background-color: #fff; color: #0f766e; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05); }
+
+        .search-container { position: relative; margin-bottom: 20px; }
+        .search-container input { width: 100%; padding: 14px 16px 14px 44px; border-radius: 12px; border: 1px solid #e2e8f0; outline: none; font-size: 14px; background-color: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        .search-container i { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #9ca3af; font-size: 16px; }
+
+        .materi-list { display: flex; flex-direction: column; gap: 14px; }
+        .materi-card { background: #fff; border-radius: 16px; padding: 20px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.03); border: 1px solid #e2e8f0;border-left: 5px solid #0f766e; cursor: pointer; transition: transform 0.2s; }
+        .materi-card:hover { transform: translateY(-2px); box-shadow: 0 6px 12px rgba(0,0,0,0.05); }
+        .materi-card-meta { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-size: 12px; color: #9ca3af; }
+        .materi-card h3 { font-size: 16px; font-weight: 700; color: #1f2937; margin-bottom: 8px; }
+        .materi-card p { font-size: 13px; color: #6b7280; line-height: 1.5; margin-bottom: 14px; }
+        .materi-card-footer { display: flex; justify-content: space-between; align-items: center; padding-top: 12px; border-top: 1px solid #f1f5f9; }
+        .author-badge { display: flex; align-items: center; gap: 8px; font-size: 12px; color: #4b5563; font-weight: 500; }
+        .author-badge i { color: #0f766e; }
+        .read-more-btn { background: none; border: none; color: #0f766e; font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 4px; }
+
+        /* --- DETAILED MATERI VIEW MODAL --- */
+        .reader-controls { display: flex; justify-content: flex-end; gap: 10px; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid #e5e7eb; }
+        .font-btn { background-color: #f3f4f6; border: none; padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; color: #4b5563; cursor: pointer; display: flex; align-items: center; gap: 4px; }
+        .font-btn:hover { background-color: #e5e7eb; }
+        
+        .materi-content-body { font-size: 15px; color: #374151; line-height: 1.8; white-space: pre-line; overflow-y: auto; max-height: 45vh; padding-right: 8px; }
+        .materi-modal-footer { display: flex; justify-content: space-between; gap: 10px; width: 100%; }
+        .action-btn { flex: 1; padding: 12px; border-radius: 8px; border: none; font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: background-color 0.2s; }
+        .btn-copy { background-color: #e0f2fe; color: #0369a1; }
+        .btn-copy:hover { background-color: #bae6fd; }
+        .btn-download { background-color: #f0fdf4; color: #15803d; }
+        .btn-download:hover { background-color: #dcfce7; }
 
         /* --- MODAL BOX DETAIL CARD OVERLAY --- */
         .modal-overlay {
@@ -353,16 +383,6 @@
         .sheet-item { display: flex; align-items: center; gap: 14px; padding: 14px; background-color: #f9fafb; border-radius: 12px; text-decoration: none; color: #374151; font-weight: 500; font-size: 14px; }
         .sheet-item i { color: #0f766e; font-size: 18px; }
 
-        /* GAYA UNTUK LOGO GAMBAR BARU (CARA 1) */
-        .app-logo-img {
-            width: 42px;
-            height: 42px;
-            object-fit: contain;
-            border-radius: 6px;
-            background-color: rgba(255, 255, 255, 0.9);
-            padding: 2px;
-        }
-
         @media (max-width: 768px) {
             body { flex-direction: column; }
             .sidebar { width: 100%; height: 64px; position: fixed; bottom: 0; top: auto; flex-direction: row; box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.05); border-radius: 16px 16px 0 0; z-index: 1000; }
@@ -391,6 +411,7 @@
         </div>
         
         <div class="sidebar-menu">
+            <!-- BERANDA -->
             <div onclick="navigateToView('homeView', this)" class="nav-item active current-page">
                 <div class="nav-link-content">
                     <i class="fa-solid fa-house"></i>
@@ -398,20 +419,15 @@
                 </div>
             </div>
             
-            <div class="nav-item-wrapper">
-                <div class="nav-item" id="materiMenuBtn" onclick="handleMenuDropdownClick('materiDropdown', 'materiMenuBtn', 'sheetMateri')">
-                    <div class="nav-link-content">
-                        <i class="fa-solid fa-book-open"></i>
-                        <span>Bank Materi</span>
-                    </div>
-                    <i class="fa-solid fa-chevron-down arrow-icon"></i>
-                </div>
-                <div class="dropdown-container" id="materiDropdown">
-                    <a href="#" class="sub-nav-item" onclick="alert('Membuka Halaman Materi Penyuluhan...')"><i class="fa-solid fa-chalkboard-user" style="font-size:13px; margin-right:6px;"></i> <span>Materi Penyuluhan</span></a>
-                    <a href="#" class="sub-nav-item" onclick="alert('Membuka Halaman Materi Khutbah...')"><i class="fa-solid fa-scroll" style="font-size:13px; margin-right:6px;"></i> <span>Materi Khutbah</span></a>
+            <!-- BANK MATERI -->
+            <div onclick="openBankMateriTab('penyuluhan')" class="nav-item" id="materiMenuBtn">
+                <div class="nav-link-content">
+                    <i class="fa-solid fa-book-open"></i>
+                    <span>Bank Materi</span>
                 </div>
             </div>
 
+            <!-- CATATAN LAPANGAN -->
             <div onclick="alert('Membuka Sistem Catatan Lapangan Mandiri...')" class="nav-item">
                 <div class="nav-link-content">
                     <i class="fa-solid fa-file-pen"></i>
@@ -419,6 +435,7 @@
                 </div>
             </div>
             
+            <!-- PROFIL -->
             <div class="nav-item-wrapper">
                 <div class="nav-item" id="profilMenuBtn" onclick="handleMenuDropdownClick('profilDropdown', 'profilMenuBtn', 'sheetProfil')">
                     <div class="nav-link-content">
@@ -435,23 +452,7 @@
         </div>
     </nav>
 
-    <div class="mobile-sheet-overlay" id="sheetMateri" onclick="closeMobileSheet('sheetMateri')">
-        <div class="mobile-sheet" onclick="event.stopPropagation()">
-            <div class="sheet-header">
-                <h3>Kategori Bank Materi</h3>
-                <button class="close-sheet-btn" onclick="closeMobileSheet('sheetMateri')"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-            <div class="sheet-menu-list">
-                <a href="#" class="sheet-item" onclick="alert('Membuka Halaman Materi Penyuluhan...'); closeMobileSheet('sheetMateri');">
-                    <i class="fa-solid fa-chalkboard-user"></i> Materi Penyuluhan
-                </a>
-                <a href="#" class="sheet-item" onclick="alert('Membuka Halaman Materi Khutbah...'); closeMobileSheet('sheetMateri');">
-                    <i class="fa-solid fa-scroll"></i> Materi Khutbah
-                </a>
-            </div>
-        </div>
-    </div>
-
+    <!-- MOBILE BOTTOM SHEET UNTUK PROFIL -->
     <div class="mobile-sheet-overlay" id="sheetProfil" onclick="closeMobileSheet('sheetProfil')">
         <div class="mobile-sheet" onclick="event.stopPropagation()">
             <div class="sheet-header">
@@ -473,7 +474,6 @@
         <header class="app-header">
             <div class="header-content">
                 <div class="logo-zone">
-                    <!-- LOGO INSTANSI BERUPA GAMBAR (CARA 1) -->
                     <img src="https://raw.githubusercontent.com/iparirokanhulu/web-ipari/refs/heads/main/Favicon-Ipari-Tuban.png" alt="Logo IPARI" class="app-logo-img">
                     <div>
                         <h1>IPARI ROKAN HULU</h1>
@@ -485,6 +485,7 @@
 
         <main class="app-container">
             
+            <!-- VIEW: BERANDA -->
             <div id="homeView" class="app-view active-view">
                 <section class="greeting-time-widget">
                     <div class="greeting-zone">
@@ -509,8 +510,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="slider-dots" id="sliderDotsContainer">
-                        </div>
+                    <div class="slider-dots" id="sliderDotsContainer"></div>
                 </section>
 
                 <section class="chart-section">
@@ -522,29 +522,58 @@
                     </div>
                 </section>
 
+                <!-- MENU BERANDA -->
                 <section class="menu-section">
                     <div class="menu-grid">
                         <div class="menu-card" onclick="navigateToView('infoView')">
                             <div class="icon-wrapper color-3"><i class="fa-solid fa-bullhorn"></i></div>
                             <h3>Info & Kegiatan</h3>
-                            <p>Akses detail pengumuman, agenda rakor, berkas surat undangan, serta jadwal aksi sosial.</p>
+                            <p>Akses detail pengumuman resmi, agenda rapat koordinasi kab, berkas surat undangan, serta jadwal aksi sosial.</p>
                         </div>
                     </div>
                 </section>
             </div>
 
+            <!-- VIEW: INFO & KEGIATAN -->
             <div id="infoView" class="app-view">
                 <div class="view-header">
                     <button class="back-btn" onclick="navigateToView('homeView')"><i class="fa-solid fa-arrow-left"></i></button>
                     <h2>Info & Kegiatan Resmi</h2>
                 </div>
-                
                 <div class="info-list-container" id="infoListContainer"></div>
+            </div>
+
+            <!-- VIEW: BANK MATERI -->
+            <div id="materiView" class="app-view">
+                <div class="view-header">
+                    <button class="back-btn" onclick="navigateToView('homeView')"><i class="fa-solid fa-arrow-left"></i></button>
+                    <h2>Bank Materi IPARI</h2>
+                </div>
+
+                <!-- Tab Navigasi Kategori Materi -->
+                <div class="tabs-header">
+                    <button class="tab-btn active" id="tabPenyuluhan" onclick="switchMateriTab('penyuluhan')">
+                        <i class="fa-solid fa-chalkboard-user"></i> Penyuluhan
+                    </button>
+                    <button class="tab-btn" id="tabKhutbah" onclick="switchMateriTab('khutbah')">
+                        <i class="fa-solid fa-scroll"></i> Khutbah
+                    </button>
+                </div>
+
+                <!-- Input Pencarian Materi -->
+                <div class="search-container">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="materiSearchInput" placeholder="Cari judul materi..." oninput="filterMateriList()">
+                </div>
+
+                <!-- Wadah Hasil List Materi -->
+                <div class="materi-list" id="materiListContainer"></div>
             </div>
 
         </main>
     </div>
 
+    <!-- MODAL: DETAIL INFO & KEGIATAN -->
     <div class="modal-overlay" id="detailModalOverlay" onclick="closeDetailModal()">
         <div class="detail-modal-card" onclick="event.stopPropagation()">
             <img id="modalImage" src="" alt="Banner Kegiatan" class="modal-img">
@@ -569,13 +598,241 @@
         </div>
     </div>
 
+    <!-- MODAL: READER / DETAIL ISI MATERI -->
+    <div class="modal-overlay" id="materiModalOverlay" onclick="closeMateriModal()">
+        <div class="detail-modal-card" onclick="event.stopPropagation()">
+            <div class="modal-body" style="padding-bottom: 12px;">
+                <div class="reader-controls">
+                    <button class="font-btn" onclick="adjustReaderFont(-2)"><i class="fa-solid fa-minus"></i> A</button>
+                    <button class="font-btn" onclick="adjustReaderFont(2)"><i class="fa-solid fa-plus"></i> A</button>
+                </div>
+                <div class="modal-meta">
+                    <span id="materiModalCategory" class="info-tag tag-sosial">Kategori</span>
+                    <span id="materiModalDate" class="info-date">Tanggal</span>
+                </div>
+                <h3 id="materiModalTitle">Judul Materi</h3>
+                <div class="materi-content-body" id="materiModalContent">
+                    Isi materi akan termuat di sini...
+                </div>
+            </div>
+            <div class="modal-footer" style="flex-direction: column; gap: 12px;">
+                <div class="materi-modal-footer">
+                    <button class="action-btn btn-copy" id="materiCopyBtn" onclick="copyMateriText()">
+                        <i class="fa-solid fa-share-nodes"></i> Bagikan Ke WA
+                    </button>
+                    <button class="action-btn btn-download" id="materiDownloadBtn" onclick="downloadMateriPDF()">
+                        <i class="fa-solid fa-download"></i> Unduh PDF
+                    </button>
+                </div>
+                <button class="close-modal-btn" onclick="closeMateriModal()" style="width: 100%;">Tutup Materi</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         const SHEET_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwS8yrUNMXOK1nmeifMj3gvImwt87f7fKGjethmoshxhsFA6ZMDU_DJ-Y3MLBzCiQqAHg/exec"; 
 
         let infoDatabase = [];
+        let materiDatabase = [];
+        let activeMateriCategory = "penyuluhan"; // Default tab aktif
         let currentActiveAttachmentUrl = ""; 
         let currentIndex = 0;
         let autoSliderInterval;
+        let currentReaderFontSize = 15; // Ukuran font awal pembaca materi
+
+        // --- DYNAMIC FETCH SYSTEM UNTUK BANK MATERI GOOGLE SHEETS ---
+        async function fetchMateriData() {
+            const container = document.getElementById('materiListContainer');
+            container.innerHTML = `
+                <div style="text-align: center; padding: 40px; color: #6b7280;">
+                    <i class="fa-solid fa-spinner fa-spin" style="font-size: 26px; color: #0f766e; margin-bottom: 12px;"></i>
+                    <p style="font-size: 14px;">Mengambil data materi terbaru...</p>
+                </div>
+            `;
+
+            try {
+                const response = await fetch(`${SHEET_WEB_APP_URL}?page=bank_materi`);
+                if (!response.ok) throw new Error("Gagal memuat materi");
+                
+                const data = await response.json();
+                
+                if (data.error || !Array.isArray(data)) {
+                    throw new Error(data.message || "Struktur data salah");
+                }
+                
+                materiDatabase = data.sort((a, b) => b.id - a.id);
+                loadMateriList();
+            } catch (error) {
+                console.error("Gagal melakukan fetch data materi: ", error);
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 40px; color: #ef4444;">
+                        <i class="fa-solid fa-circle-exclamation" style="font-size: 28px; margin-bottom: 12px;"></i>
+                        <p style="font-size: 14px; font-weight:600;">Gagal Memuat Materi</p>
+                        <p style="font-size: 12px; color: #9ca3af; margin-top: 4px;">Periksa sheet bank_materi atau koneksi internet Anda.</p>
+                    </div>
+                `;
+            }
+        }
+
+        // --- NAVIGASI PAGE UTAMA ---
+        function navigateToView(viewId, sidebarItem = null) {
+            document.querySelectorAll('.app-view').forEach(view => {
+                view.classList.remove('active-view');
+            });
+            document.getElementById(viewId).classList.add('active-view');
+            
+            if(sidebarItem) {
+                document.querySelectorAll('.nav-item').forEach(item => {
+                    item.classList.remove('current-page');
+                });
+                sidebarItem.classList.add('current-page');
+            }
+
+            if (viewId === 'infoView') {
+                fetchInfoData();
+            }
+        }
+
+        // --- MENU BANK MATERI CONTROLLER ---
+        function openBankMateriTab(category) {
+            navigateToView('materiView');
+            switchMateriTab(category);
+            
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('current-page');
+            });
+            document.getElementById('materiMenuBtn').classList.add('current-page');
+        }
+
+        function switchMateriTab(category) {
+            activeMateriCategory = category;
+            
+            document.getElementById('tabPenyuluhan').classList.remove('active');
+            document.getElementById('tabKhutbah').classList.remove('active');
+            
+            if (category === 'penyuluhan') {
+                document.getElementById('tabPenyuluhan').classList.add('active');
+            } else {
+                document.getElementById('tabKhutbah').classList.add('active');
+            }
+            
+            document.getElementById('materiSearchInput').value = "";
+            
+            // Jika database masih kosong, lakukan hit ke Web App terlebih dahulu
+            if (materiDatabase.length === 0) {
+                fetchMateriData();
+            } else {
+                loadMateriList();
+            }
+        }
+
+        function loadMateriList() {
+            const container = document.getElementById('materiListContainer');
+            container.innerHTML = "";
+
+            const filtered = materiDatabase.filter(m => m.category.toLowerCase() === activeMateriCategory.toLowerCase());
+
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 40px; color: #9ca3af;">
+                        <i class="fa-regular fa-folder-open" style="font-size: 28px; margin-bottom: 12px; display:block;"></i>
+                        <p style="font-size: 14px;">Materi kategori ${activeMateriCategory} belum tersedia.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            filtered.forEach(materi => {
+                const card = document.createElement('div');
+                card.className = "materi-card";
+                card.onclick = () => openMateriModal(materi);
+                card.innerHTML = `
+                    <div class="materi-card-meta">
+                        <span><i class="fa-regular fa-calendar"></i> ${materi.date || '-'}</span>
+                    </div>
+                    <h3>${materi.title || 'Tanpa Judul'}</h3>
+                    <p>${materi.summary || ''}</p>
+                    <div class="materi-card-footer">
+                        <span class="author-badge"><i class="fa-solid fa-user-tie"></i> ${materi.author || 'Anonim'}</span>
+                        <button class="read-more-btn">Buka Materi <i class="fa-solid fa-angle-right"></i></button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function filterMateriList() {
+            const keyword = document.getElementById('materiSearchInput').value.toLowerCase();
+            const cards = document.querySelectorAll('.materi-card');
+            
+            cards.forEach(card => {
+                const title = card.querySelector('h3').innerText.toLowerCase();
+                const summary = card.querySelector('p').innerText.toLowerCase();
+                if (title.includes(keyword) || summary.includes(keyword)) {
+                    card.style.display = "block";
+                } else {
+                    card.style.display = "none";
+                }
+            });
+        }
+
+        // --- READER CONTROLLER (ZOOM, WA SHARE, & PDF DOWLOAD) ---
+        let selectedMateriForModal = null;
+
+        function openMateriModal(materi) {
+            selectedMateriForModal = materi;
+            
+            const tagSpan = document.getElementById('materiModalCategory');
+            const isPenyuluhan = materi.category.toLowerCase() === 'penyuluhan';
+            tagSpan.innerText = isPenyuluhan ? "Penyuluhan" : "Khutbah";
+            tagSpan.className = `info-tag ${isPenyuluhan ? 'tag-sosial' : 'tag-agenda'}`;
+
+            document.getElementById('materiModalDate').innerText = `${materi.date || '-'} | Oleh: ${materi.author || 'Anonim'}`;
+            document.getElementById('materiModalTitle').innerText = materi.title || 'Tanpa Judul';
+            
+            const contentDiv = document.getElementById('materiModalContent');
+            contentDiv.innerText = materi.content || 'Tidak ada isi konten.';
+            contentDiv.style.fontSize = `${currentReaderFontSize}px`;
+
+            // Atur visibilitas tombol unduh PDF berdasarkan ketersediaan link di Google Sheets
+            const downloadBtn = document.getElementById('materiDownloadBtn');
+            if (materi.attachmentUrl && materi.attachmentUrl.trim() !== "") {
+                downloadBtn.style.display = "flex";
+            } else {
+                downloadBtn.style.display = "none";
+            }
+
+            document.getElementById('materiModalOverlay').classList.add('show');
+        }
+
+        function closeMateriModal() {
+            document.getElementById('materiModalOverlay').classList.remove('show');
+        }
+
+        function adjustReaderFont(change) {
+            currentReaderFontSize = Math.max(12, Math.min(28, currentReaderFontSize + change));
+            document.getElementById('materiModalContent').style.fontSize = `${currentReaderFontSize}px`;
+        }
+
+        function copyMateriText() {
+            if (!selectedMateriForModal) return;
+            const shareText = `*${selectedMateriForModal.title}*\nOleh: ${selectedMateriForModal.author || 'Anonim'}\n\n${selectedMateriForModal.content || ''}\n\n_Disalin dari Aplikasi IPARI Rokan Hulu_`;
+            
+            navigator.clipboard.writeText(shareText).then(() => {
+                const encodedText = encodeURIComponent(shareText);
+                window.open(`https://api.whatsapp.com/send?text=${encodedText}`, '_blank');
+            }).catch(err => {
+                alert("Gagal menyalin teks otomatis, silakan salin manual.");
+            });
+        }
+
+        function downloadMateriPDF() {
+            if (selectedMateriForModal && selectedMateriForModal.attachmentUrl) {
+                window.open(selectedMateriForModal.attachmentUrl, '_blank');
+            } else {
+                alert("Tautan PDF untuk materi ini tidak tersedia.");
+            }
+        }
 
         // --- SISTEM SLIDER BANNER DINAMIS ---
         async function fetchSliderData() {
@@ -759,28 +1016,9 @@
             document.getElementById('detailModalOverlay').classList.remove('show');
         }
 
-        function navigateToView(viewId, sidebarItem = null) {
-            document.querySelectorAll('.app-view').forEach(view => {
-                view.classList.remove('active-view');
-            });
-            document.getElementById(viewId).classList.add('active-view');
-            
-            if(sidebarItem) {
-                document.querySelectorAll('.nav-item').forEach(item => {
-                    item.classList.remove('current-page');
-                });
-                sidebarItem.classList.add('current-page');
-            }
-
-            if (viewId === 'infoView') {
-                fetchInfoData();
-            }
-        }
-
-        // --- SISTEM AKURASI TANGGAL HIJRIYAH DENGAN KOREKSI ---
+        // --- SISTEM AKURASI TANGGAL HIJRIYAH ---
         function getAccurateHijriDate(date) {
             try {
-                // KOREKSI HARI: -1 untuk mengurangi 1 hari karena bawaan sistem lebih 1 hari
                 const HIJRI_OFFSET = -1; 
                 
                 const adjustedDate = new Date(date);
@@ -836,6 +1074,8 @@
             updateDateTime();
             setInterval(updateDateTime, 1000);
             fetchSliderData();
+            // Lakukan pre-fetch Bank Materi dari Google Sheets di latar belakang
+            fetchMateriData();
         });
 
         // --- SISTEM GRAFIK SEBARAN PENYULUH ---
@@ -876,7 +1116,6 @@
             if(sidebar.classList.contains('minimized')) {
                 toggleIcon.className = "fa-solid fa-chevron-right";
                 document.getElementById('profilDropdown').classList.remove('show');
-                document.getElementById('materiDropdown').classList.remove('show');
             } else {
                 toggleIcon.className = "fa-solid fa-bars";
             }
@@ -891,13 +1130,6 @@
                 const sidebar = document.getElementById('appSidebar');
                 if(sidebar.classList.contains('minimized')) toggleSidebar();
                 
-                if(dropdownId === 'profilDropdown') {
-                    document.getElementById('materiDropdown').classList.remove('show');
-                    document.getElementById('materiMenuBtn').classList.remove('open');
-                } else {
-                    document.getElementById('profilDropdown').classList.remove('show');
-                    document.getElementById('profilMenuBtn').classList.remove('open');
-                }
                 dropdown.classList.toggle('show');
                 menuBtn.classList.toggle('open');
             }
